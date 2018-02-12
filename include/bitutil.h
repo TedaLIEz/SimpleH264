@@ -5,6 +5,15 @@
 #ifndef SIMPLEH264_BITUTIL_H
 #define SIMPLEH264_BITUTIL_H
 namespace bit {
+/**
+ * find bits of bit_len length at offset in the bits array
+ *
+ * @param bits bits stored as unsigned char array
+ * @param len length of bits
+ * @param bit_len the length of result
+ * @param offset start offset of bits
+ * @return bits represented as long
+ */
 inline long next_bit(unsigned char* bits, int len, int bit_len, int offset) {
   if (bit_len > len * 8 - offset) {
     std::cerr << "Out of boundary " << std::endl;
@@ -15,7 +24,7 @@ inline long next_bit(unsigned char* bits, int len, int bit_len, int offset) {
   auto start_bits = bits + start_index;
   long rst = 0;
   if (start_offset != 0) {
-    if (bit_len < 8) {
+    if (bit_len < 8 - start_offset) {
       auto bit_mask = static_cast<unsigned char>((1 << bit_len) - 1);
       long tmp = *start_bits >> (8 - start_offset - bit_len);
       rst += (tmp & bit_mask);
