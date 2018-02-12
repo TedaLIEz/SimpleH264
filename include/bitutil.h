@@ -4,6 +4,7 @@
 
 #ifndef SIMPLEH264_BITUTIL_H
 #define SIMPLEH264_BITUTIL_H
+#include <iostream>
 namespace bit {
 /**
  * find bits of bit_len length at offset in the bits array
@@ -14,7 +15,7 @@ namespace bit {
  * @param offset start offset of bits
  * @return bits represented as long
  */
-inline long next_bit(unsigned char* bits, int len, int bit_len, int offset) {
+inline long next_bit(unsigned char* bits, unsigned long len, long bit_len, int offset) {
   if (bit_len > len * 8 - offset) {
     std::cerr << "Out of boundary " << std::endl;
     return -1;
@@ -33,8 +34,8 @@ inline long next_bit(unsigned char* bits, int len, int bit_len, int offset) {
       rst += (*start_bits & bit_mask) << (bit_len - 8 + start_offset);
       start_bits++;
       bit_len = bit_len - 8 + start_offset;
-      int end_len = bit_len / 8;
-      int end_offset = bit_len % 8;
+      long end_len = bit_len / 8;
+      long end_offset = bit_len % 8;
       for (int i = 0; i < end_len; i++) {
         rst += (*start_bits) << (bit_len - 8 * (i + 1));
         start_bits++;
@@ -44,8 +45,8 @@ inline long next_bit(unsigned char* bits, int len, int bit_len, int offset) {
     }
 
   } else {
-    int end_len = bit_len / 8;
-    int end_offset = bit_len % 8;
+    long end_len = bit_len / 8;
+    long end_offset = bit_len % 8;
     for (int i = 0; i < end_len; i++) {
       rst += ((int)(*start_bits)) << (bit_len - 8 * (i + 1));
       start_bits++;
@@ -55,6 +56,17 @@ inline long next_bit(unsigned char* bits, int len, int bit_len, int offset) {
   }
   return rst;
 
+}
+
+/**
+ * return one byte of bits from bits array at offset
+ * @param bits bits array
+ * @param len total length of bits array
+ * @param offset offset of the result
+ * @return one byte of bits from bits array at offset
+ */
+inline uint8_t read_bytes(unsigned char* bits, unsigned long len, int offset) {
+  return static_cast<uint8_t>(next_bit(bits, len, 8, offset));
 }
 }
 #endif //SIMPLEH264_BITUTIL_H

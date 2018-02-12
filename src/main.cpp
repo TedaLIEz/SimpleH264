@@ -1,12 +1,18 @@
 #include <iostream>
 #include "io.h"
+#include "nalu.h"
 int main() {
-  long file_size;
+  unsigned long file_size;
   unsigned char *data;
-  if (io::read_file("sample/test_1080p.264", data, file_size)) {
+  std::vector<uint8_t> nalus;
+  if (io::read_file("sample/test_1080p.h264", data, file_size)) {
     std::cout << "file size " << file_size << std::endl;
-    for (int i = 0; i < 10; i++) {
-      std::cout << std::hex << +*(data + i) << std::endl;
+    auto count = find_nal_prefix(data, file_size * 8, nalus);
+    if (count >= 0) {
+      std::cout << "nalu count " << count << std::endl;
+      for (auto &it : nalus) {
+        std::cout << std::hex << +it << std::endl;
+      }
     }
     delete[] data;
   }

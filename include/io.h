@@ -14,7 +14,7 @@ inline bool file_exist(const std::string& file_path) {
   return file.good();
 }
 
-inline bool read_file(const std::string& file_path, unsigned char*& data, long& file_size) {
+inline bool read_file(const std::string& file_path, unsigned char*& data, unsigned long& file_size) {
   if (!file_exist(file_path)) {
     std::cerr << "file not exist!" << std::endl;
     return false;
@@ -25,7 +25,7 @@ inline bool read_file(const std::string& file_path, unsigned char*& data, long& 
     return false;
   }
   file.seekg(0, std::ios::end);
-  file_size = static_cast<long>(file.tellg());
+  file_size = static_cast<unsigned long>(file.tellg());
   data = new unsigned char[file_size];
   file.seekg(0, std::ios::beg);
   file.read(reinterpret_cast<char *>(data), file_size);
