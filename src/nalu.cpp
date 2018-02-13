@@ -4,7 +4,7 @@
 
 #include "nalu.h"
 #include "bitutil.h"
-int find_nal_prefix(unsigned char* bits, unsigned long bit_len, std::vector<uint8_t> &nalBytes) {
+int find_nal_prefix(unsigned char* bits, unsigned long bit_len, std::vector<unsigned long> &nalBytes) {
   int offset = 0;
   int count = 0;
   while (offset < bit_len) {
@@ -25,13 +25,20 @@ int find_nal_prefix(unsigned char* bits, unsigned long bit_len, std::vector<uint
     // find start_code_prefix_one_3bytes
     // find nalu header
     offset += 24;
+    int len = 0;
+    int start_offset = offset;
     while (offset < bit_len && bit::next_bit(bits, bit_len, 24, offset) != NAL_HEADER_SHORT
         && bit::next_bit(bits, bit_len, 32, offset) != NAL_HEADER_LONG) {
-      auto tmp = bit::read_bytes(bits, bit_len, offset);
-      nalBytes.push_back(tmp);
       offset += 8;
-      count++;
+      len += 8;
     }
+    auto data = bit::next_bit(bits, bit_len, len, start_offset);
+#ifdef DEBUG
+    std::cout << "find nal, len " << len << std::endl;
+    std::cout << "start_offset " << start_offset << std::endl;
+#endif
+    nalBytes.push_back(static_cast<unsigned long &&>(data));
+    count++;
   }
   return count;
 }

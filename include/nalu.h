@@ -9,5 +9,5 @@
 #include <vector>
 #include <fstream>
 
-int find_nal_prefix(unsigned char* bits, unsigned long bit_len, std::vector<uint8_t> &nalBytes);
+int find_nal_prefix(unsigned char* bits, unsigned long bit_len, std::vector<unsigned long> &nalBytes);
 #endif //SIMPLEH264_NAL_H

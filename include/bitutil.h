@@ -48,7 +48,7 @@ inline long next_bit(unsigned char* bits, unsigned long len, long bit_len, int o
     long end_len = bit_len / 8;
     long end_offset = bit_len % 8;
     for (int i = 0; i < end_len; i++) {
-      rst += ((int)(*start_bits)) << (bit_len - 8 * (i + 1));
+      rst += ((unsigned long)(*start_bits)) << (bit_len - 8 * (i + 1));
       start_bits++;
     }
     int offset_value = (*start_bits) >> (8 - end_offset);
