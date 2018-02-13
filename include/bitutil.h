@@ -15,15 +15,16 @@ namespace bit {
  * @param offset start offset of bits
  * @return bits represented as long
  */
-inline long next_bit(unsigned char* bits, unsigned long len, long bit_len, int offset) {
+
+inline unsigned long next_bit(char* bits, unsigned long len, long bit_len, int offset) {
   if (bit_len > len * 8 - offset) {
     std::cerr << "Out of boundary " << std::endl;
-    return -1;
+    return 0;
   }
   int start_index = offset / 8;
   int start_offset = offset % 8;
   auto start_bits = bits + start_index;
-  long rst = 0;
+  unsigned rst = 0;
   if (start_offset != 0) {
     if (bit_len < 8 - start_offset) {
       auto bit_mask = static_cast<unsigned char>((1 << bit_len) - 1);
@@ -65,7 +66,7 @@ inline long next_bit(unsigned char* bits, unsigned long len, long bit_len, int o
  * @param offset offset of the result
  * @return one byte of bits from bits array at offset
  */
-inline uint8_t read_bytes(unsigned char* bits, unsigned long len, int offset) {
+inline uint8_t read_bytes(char* bits, unsigned long len, int offset) {
   return static_cast<uint8_t>(next_bit(bits, len, 8, offset));
 }
 }
