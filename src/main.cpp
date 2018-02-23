@@ -5,12 +5,12 @@
 int main() {
 //  unsigned long size;
 //  unsigned char *nalu;
-  auto *uev = new u_char[1];
+  auto *uev = new u_char[2];
   long len = 0;
-  auto rst = golomb::get_uev_encode(4, uev, len);
+  auto rst = golomb::get_sev_encode(-15, uev, len);
   std::cout << "encode len " << len << std::endl;
   std::cout << "encode rst " << (int)uev[0] << std::endl;
-  rst = golomb::get_uev_decode(uev, 0, 0);
+  rst = golomb::get_sev_decode(uev, 0, 0);
   std::cout << "decode rst " << rst << std::endl;
 //  std::ifstream file("sample/test_1080p.264", std::ios::binary);
 //  if (!file.is_open()) {
