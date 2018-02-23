@@ -69,5 +69,19 @@ inline unsigned long next_bit(char* bits, unsigned long len, long bit_len, int o
 inline uint8_t read_bytes(char* bits, unsigned long len, int offset) {
   return static_cast<uint8_t>(next_bit(bits, len, 8, offset));
 }
+
+inline uint8_t get_bit(unsigned char* bits, uint8_t bytePos, uint8_t bitPos) {
+  uint8_t mask = 0, val = 0;
+
+  mask = 1 << (7 - bitPos);
+  val = ((bits[bytePos] & mask) != 0);
+  return val;
+}
+
+inline uint8_t write_bit(unsigned char* bits, long pos, bool bit) {
+  auto byte_offset = pos / 8;
+  auto offset = pos % 8;
+  bits[byte_offset] += static_cast<unsigned char>(bit << (8 - offset - 1));
+}
 }
 #endif //SIMPLEH264_BITUTIL_H
