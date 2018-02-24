@@ -8,6 +8,14 @@
 #define NAL_HEADER_LONG 0x00000001
 #include <vector>
 #include <fstream>
-int read_one_sodb(unsigned char* nalu, unsigned long& nalu_size);
-int read_one_nalu(std::ifstream& file, unsigned long start, unsigned char*& nalu, unsigned long& nalu_size);
+#include <ostream>
+#pragma pack(push, 1)
+class nalu_header {
+ public:
+  unsigned forbidden_zero_bit : 1;
+  unsigned nal_ref_idc : 2;
+  unsigned nal_unit_type : 5;
+  friend std::ostream &operator<<(std::ostream &os, const nalu_header &header);
+};
+#pragma pack(pop)
 #endif //SIMPLEH264_NAL_H

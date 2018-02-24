@@ -1,5 +1,6 @@
 #include <iostream>
 #include <debug.h>
+#include <nalu_parser.h>
 #include "io.h"
 #include "nalu.h"
 #include "golomb.h"
@@ -16,7 +17,7 @@ int main() {
 void test_nalu() {
   unsigned long size;
   unsigned char *nalu;
-  std::ifstream file("sample/test1.264", std::ios::binary);
+  std::ifstream file("sample/test_1080p.264", std::ios::binary);
   if (!file.is_open()) {
     return;
   }
@@ -27,6 +28,8 @@ void test_nalu() {
       PRINT_HEX((unsigned int)*(nalu + i));
     }
     std::cout << "sodb length " << size << std::endl;
+    auto header = parse_header(nalu, size);
+    std::cout << "header " << header << std::endl;
   }
 }
 
