@@ -78,7 +78,7 @@ inline uint8_t get_bit(unsigned char* bits, uint8_t bytePos, uint8_t bitPos) {
   return val;
 }
 
-inline uint8_t write_bit(unsigned char* bits, long pos, bool bit) {
+inline void write_bit(unsigned char* bits, long pos, bool bit) {
   auto byte_offset = pos / 8;
   auto offset = pos % 8;
   bits[byte_offset] += static_cast<unsigned char>(bit << (8 - offset - 1));

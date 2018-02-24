@@ -1,4 +1,5 @@
 #include <iostream>
+#include <debug.h>
 #include "io.h"
 #include "nalu.h"
 #include "golomb.h"
@@ -21,10 +22,11 @@ void test_nalu() {
   }
   if (read_one_nalu(file, 0, nalu, size)) {
     std::cout << "read data length " << size << std::endl;
-//    read_one_sodb(nalu, size);
+    read_one_sodb(nalu, size);
     for (int i = 0; i < size; i++) {
-      std::cout << "data " << std::hex << (unsigned int)*(nalu + i) << std::endl;
+      PRINT_HEX((unsigned int)*(nalu + i));
     }
+    std::cout << "sodb length " << size << std::endl;
   }
 }
 

@@ -6,32 +6,32 @@
 #include "nalu.h"
 #include "bitutil.h"
 
-int read_one_sodb(unsigned char* nalu, unsigned long& nalu_size) {
+int read_one_sodb(unsigned char *nalu, unsigned long &nalu_size) {
   if (bit::next_bit(nalu, nalu_size, 1, 0) != 0) {
     return -1;
   }
   int index = 0;
-  while (index < nalu_size * 8) {
+  while (index < nalu_size * 8 - 16) {
     auto bits = bit::next_bit(nalu, nalu_size, 16, index);
-    std::cout << std::hex << bits << std::endl;
     if (bits == 0x0000) {
       bits = bit::next_bit(nalu, nalu_size, 16, index + 16);
       if (bits == 0x0300 || bits == 0x0301 || bits == 0x0302 || bits == 0x0303) {
 #ifdef DEBUG
         std::cout << "find a emulation prevention bytes at " << index << std::endl;
 #endif
-        index += 32;
+        auto start_bytes = (index + 16) / 8;
+        memcpy(nalu + start_bytes, nalu + start_bytes + 1, nalu_size - start_bytes - 1);
+        nalu_size -= 1;
+        index += 24;
         continue;
       }
-      index += 16;
-    } else {
-      index += 4;
     }
+    index += 4;
   }
   return 0;
 }
 
-int read_one_nalu(std::ifstream& file, unsigned long start, unsigned char *&nalu, unsigned long &nalu_size) {
+int read_one_nalu(std::ifstream &file, unsigned long start, unsigned char *&nalu, unsigned long &nalu_size) {
   auto offset = start;
   unsigned long len = 0;
   file.seekg(0, std::ios::end);
@@ -71,7 +71,7 @@ int read_one_nalu(std::ifstream& file, unsigned long start, unsigned char *&nalu
   offset += 3;
 
   auto begin = offset;
-  while (offset < (long)file_size) {
+  while (offset < (long) file_size) {
     file.seekg(offset, std::ios::beg);
     if (offset < (long) file_size - 4) {
       memset(buffer, 0, 4);
@@ -80,7 +80,7 @@ int read_one_nalu(std::ifstream& file, unsigned long start, unsigned char *&nalu
           || bit::next_bit(reinterpret_cast<unsigned char *>(buffer), 32, 32, 0) == NAL_HEADER_LONG) {
         break;
       }
-      file.seekg((int)file.tellg() - 4, std::ios::beg);
+      file.seekg((int) file.tellg() - 4, std::ios::beg);
     }
     len += 1;
     offset += 1;
