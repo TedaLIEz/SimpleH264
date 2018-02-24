@@ -16,7 +16,7 @@ namespace bit {
  * @return bits represented as long
  */
 
-inline unsigned long next_bit(char* bits, unsigned long len, long bit_len, int offset) {
+inline unsigned long next_bit(unsigned char* bits, unsigned long len, long bit_len, int offset) {
   if (bit_len > len * 8 - offset) {
     std::cerr << "Out of boundary " << std::endl;
     return 0;
@@ -66,7 +66,7 @@ inline unsigned long next_bit(char* bits, unsigned long len, long bit_len, int o
  * @param offset offset of the result
  * @return one byte of bits from bits array at offset
  */
-inline uint8_t read_bytes(char* bits, unsigned long len, int offset) {
+inline uint8_t read_bytes(unsigned char* bits, unsigned long len, int offset) {
   return static_cast<uint8_t>(next_bit(bits, len, 8, offset));
 }
 

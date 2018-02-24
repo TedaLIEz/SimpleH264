@@ -8,7 +8,6 @@
 #define NAL_HEADER_LONG 0x00000001
 #include <vector>
 #include <fstream>
-
-int find_nal_prefix(char* bits, unsigned long bit_len, std::vector<unsigned long> &nalBytes);
+int read_one_sodb(unsigned char* nalu, unsigned long& nalu_size);
 int read_one_nalu(std::ifstream& file, unsigned long start, unsigned char*& nalu, unsigned long& nalu_size);
 #endif //SIMPLEH264_NAL_H
