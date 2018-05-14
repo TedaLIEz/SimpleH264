@@ -1,6 +1,8 @@
 #include <iostream>
 #include <debug.h>
 #include <nalu_parser.h>
+#include <parser.h>
+#include <sps.h>
 #include "io.h"
 #include "nalu.h"
 #include "golomb.h"
@@ -22,14 +24,17 @@ void test_nalu() {
     return;
   }
   if (read_one_nalu(file, 0, nalu, size)) {
-    std::cout << "read data length " << size << std::endl;
+    std::cout << "read data length in bytes " << size << std::endl;
     read_one_sodb(nalu, size);
     for (int i = 0; i < size; i++) {
       PRINT_HEX((unsigned int)*(nalu + i));
     }
-    std::cout << "sodb length " << size << std::endl;
+    std::cout << "sodb length in bytes " << size << std::endl;
     auto header = parse_header(nalu, size);
     std::cout << "header " << header << std::endl;
+    SpsParser* parser = new SpsParser();
+    parser->parse(nalu, size);
+    std::cout << "profile idc " << parser->getProfile_idc() << std::endl;
   }
 }
 

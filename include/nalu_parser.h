@@ -8,7 +8,13 @@
 #include <fstream>
 #define NAL_HEADER_SHORT 0x000001
 #define NAL_HEADER_LONG 0x00000001
-
+/**
+ * parse the nalu to sodb, where 0x000000, 0x000001, 0x000002 and 0x000003 turns to be 0x00000300,
+ * 0x00000301, 0x00000302 and 0x00000303 respectively.
+ * @param nalu the original nalu, change to sodb after parsing
+ * @param nalu_size the length of nalu in bytes, change to length of sodb after parsing
+ * @return 0 parsing successfully
+ */
 int read_one_sodb(unsigned char* nalu, unsigned long& nalu_size);
 int read_one_nalu(std::ifstream& file, unsigned long start, unsigned char*& nalu, unsigned long& nalu_size);
 /**

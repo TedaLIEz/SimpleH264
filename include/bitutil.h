@@ -78,6 +78,15 @@ inline uint8_t get_bit(unsigned char* bits, uint8_t bytePos, uint8_t bitPos) {
   return val;
 }
 
+inline int get_bit(long bits, uint8_t bitPos) {
+  uint8_t mask = 0;
+  int val = 0;
+
+  mask = 1 << (7 - bitPos);
+  val = ((bits & mask) != 0);
+  return val;
+}
+
 inline void write_bit(unsigned char* bits, long pos, bool bit) {
   auto byte_offset = pos / 8;
   auto offset = pos % 8;
