@@ -26,7 +26,7 @@ int read_one_sodb(unsigned char *nalu, unsigned long &nalu_size) {
         continue;
       }
     }
-    index += 4;
+    index += 16;
   }
   return 0;
 }
