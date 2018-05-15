@@ -18,6 +18,7 @@ class SpsParser : public Parser {
 
   int getProfile_idc() const;
 
+  int getLevel_idc() const;
   int getType() override;
 
 };

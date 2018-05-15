@@ -28,12 +28,17 @@ void SpsParser::parse(unsigned char *data, unsigned long len) {
   std::cout << "set4_flag " << cons_set4_flag << std::endl;
   std::cout << "set5_flag " << cons_set5_flag << std::endl;
 #endif
+  level_idc = bit::read_bytes(data, len, offset);
+  offset += 8;
 }
 
 int SpsParser::getProfile_idc() const {
   return profile_idc;
 }
 
+int SpsParser::getLevel_idc() const {
+  return level_idc;
+}
 
 int SpsParser::getType() {
   return id;
