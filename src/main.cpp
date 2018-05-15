@@ -32,9 +32,6 @@ void test_nalu() {
     std::cout << "sodb length in bytes " << size << std::endl;
     auto header = parse_header(nalu, size);
     std::cout << "header " << header << std::endl;
-    SpsParser* parser = new SpsParser();
-    parser->parse(nalu, size);
-    std::cout << "profile idc " << parser->getProfile_idc() << std::endl;
   }
 }
 

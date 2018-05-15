@@ -96,9 +96,6 @@ int read_one_nalu(std::ifstream &file, unsigned long start, unsigned char *&nalu
 
 nalu_header parse_header(unsigned char* nalu, unsigned long nalu_size) {
   nalu_header header{};
-  // fixme: bug when using memcpy
-  header.forbidden_zero_bit = nalu[0] & (1 << 7);
-  header.nal_unit_type = nalu[0] & ((1 << 5) - 1);
-  header.nal_ref_idc = (nalu[0] & ((1 << 7) - 1)) >> 5;
+  memcpy(&header, nalu, sizeof(header));
   return header;
 }

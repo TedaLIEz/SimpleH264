@@ -12,9 +12,17 @@
 #pragma pack(push, 1)
 class nalu_header {
  public:
-  unsigned forbidden_zero_bit : 1;
-  unsigned nal_ref_idc : 2;
-  unsigned nal_unit_type : 5;
+#if defined(__LITTLE_ENDIAN)
+  unsigned int nal_unit_type : 5;
+  unsigned int nal_ref_idc : 2;
+  unsigned int forbidden_zero_bit : 1;
+#elif defined(__BIG_ENDIAN)
+  unsigned int forbidden_zero_bit : 1;
+  unsigned int nal_ref_idc : 2;
+  unsigned int nal_unit_type : 5;
+#else
+  #error	"ByteOrder Error!"
+#endif
   friend std::ostream &operator<<(std::ostream &os, const nalu_header &header);
 };
 #pragma pack(pop)
