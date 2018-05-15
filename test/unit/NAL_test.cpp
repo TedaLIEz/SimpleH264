@@ -5,6 +5,7 @@
 #include <nalu_parser.h>
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include <cstring>
 TEST(NAL, ParseHeader_Test) {
   unsigned char mock_data[] = {0x67};
   auto header = parse_header(mock_data, 1);
@@ -20,6 +21,6 @@ TEST(NAL, SODB_Test) {
   read_one_sodb(mock_data, size);
   EXPECT_EQ(size, 3);
   unsigned char rst[3];
-  std::memcpy(rst, mock_data, size);
+  memcpy(rst, mock_data, size);
   EXPECT_THAT(rst, ::testing::ElementsAre(0x00, 0x00, 0x01));
 }
