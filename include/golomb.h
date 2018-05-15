@@ -7,10 +7,12 @@
 
 #include <cstdint>
 #include "bitutil.h"
+#include <cstring>
 namespace golomb {
 inline int get_uev_encode(unsigned int code_num, unsigned char* bits, long& len) {
   if (code_num == 0) {
     len = 1;
+    memset(bits, 0, len / 8 + 1);
     bit::write_bit(bits, 0, 1);
     return 0;
   }
@@ -21,6 +23,7 @@ inline int get_uev_encode(unsigned int code_num, unsigned char* bits, long& len)
     bit_len++;
   }
   len = bit_len * 2 - 1;
+  memset(bits, 0, len / 8 + 1);
   for (int i = bit_len - 1; i < len; i++) {
     int mask = 1 << (len - i - 1);
     bool bit = ((code_num + 1) & mask) != 0;
