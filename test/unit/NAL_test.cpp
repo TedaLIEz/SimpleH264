@@ -20,6 +20,6 @@ TEST(NAL, SODB_Test) {
   read_one_sodb(mock_data, size);
   EXPECT_EQ(size, 3);
   unsigned char rst[3];
-  memcpy(rst, mock_data, size);
+  std::memcpy(rst, mock_data, size);
   EXPECT_THAT(rst, ::testing::ElementsAre(0x00, 0x00, 0x01));
 }
