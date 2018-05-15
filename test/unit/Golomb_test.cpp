@@ -11,33 +11,29 @@ TEST(Golomb, Golomb_uev_encode_test) {
   long len = -1;
   golomb::get_uev_encode(0, bits, len);
   EXPECT_EQ(len, 1);
-  unsigned char rst1[] = {0x80};
-  EXPECT_EQ(memcmp(bits, &rst1, len / 8 + 1), 0);
+  EXPECT_EQ(bits[0], 0x80);
   memset(bits, 0, len / 8 + 1);
 
   golomb::get_uev_encode(1, bits, len);
   EXPECT_EQ(len, 3);
-  unsigned char rst2[] = {0b01000000};
-  EXPECT_EQ(memcmp(bits, &rst2, len / 8 + 1), 0);
+  EXPECT_EQ(bits[0], 0b01000000);
   memset(bits, 0, len / 8 + 1);
 
   golomb::get_uev_encode(6, bits, len);
   EXPECT_EQ(len, 5);
-  unsigned char rst3[] = {0b00111000};
-  EXPECT_EQ(memcmp(bits, &rst3, len / 8 + 1), 0);
+  EXPECT_EQ(bits[0], 0b00111000);
   memset(bits, 0, len / 8 + 1);
 
 
   golomb::get_uev_encode(7, bits, len);
   EXPECT_EQ(len, 7);
-  unsigned char rst4[] = {0b00010000};
-  EXPECT_EQ(memcmp(bits, &rst4, len / 8 + 1), 0);
+  EXPECT_EQ(bits[0], 0b00010000);
   memset(bits, 0, len / 8 + 1);
 
   golomb::get_uev_encode(15, bits, len);
   EXPECT_EQ(len, 9);
-  unsigned char rst5[] = {0b00001000, 0b00000000};
-  EXPECT_EQ(memcmp(bits, &rst5, len / 8 + 1), 0);
+  EXPECT_EQ(bits[0], 0b00001000);
+  EXPECT_EQ(bits[1], 0x00);
   memset(bits, 0, len / 8 + 1);
 
 }
@@ -71,20 +67,18 @@ TEST(Golomb, Golomb_sev_encode_test) {
 
   golomb::get_sev_encode(0, bits, len);
   EXPECT_EQ(len, 1);
-  unsigned char rst1[] = {0x80};
-  EXPECT_EQ(memcmp(bits, &rst1, len / 8 + 1), 0);
+  EXPECT_EQ(bits[0], 0x80);
   memset(bits, 0, len / 8 + 1);
 
   golomb::get_sev_encode(4, bits, len);
   EXPECT_EQ(len, 7);
-  unsigned char rst2[] = {0b00010000};
-  EXPECT_EQ(memcmp(bits, &rst2, len / 8 + 1), 0);
+  EXPECT_EQ(bits[0], 0b00010000);
   memset(bits, 0, len / 8 + 1);
 
   golomb::get_sev_encode(-15, bits, len);
   EXPECT_EQ(len, 9);
-  unsigned char rst3[] = {0b00001111, 0b10000000};
-  EXPECT_EQ(memcmp(bits, &rst3, len / 8 + 1), 0);
+  EXPECT_EQ(bits[0], 0b00001111);
+  EXPECT_EQ(bits[1], 0b10000000);
   memset(bits, 0, len / 8 + 1);
 
 }
