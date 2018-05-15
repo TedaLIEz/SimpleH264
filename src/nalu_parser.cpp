@@ -5,7 +5,7 @@
 #include <fstream>
 #include <nalu.h>
 #include <bitutil.h>
-#include <cstring>
+#include <string.h>
 int read_one_sodb(unsigned char *nalu, unsigned long &nalu_size) {
   if (bit::next_bit(nalu, nalu_size, 1, 0) != 0) {
     return -1;
@@ -20,13 +20,13 @@ int read_one_sodb(unsigned char *nalu, unsigned long &nalu_size) {
         std::cout << "find a emulation prevention bytes at " << index << std::endl;
 #endif
         auto start_bytes = (index + 16) / 8;
-        memcpy(nalu + start_bytes, nalu + start_bytes + 1, nalu_size - start_bytes - 1);
+        memmove(nalu + start_bytes, nalu + start_bytes + 1, nalu_size - start_bytes - 1);
         nalu_size -= 1;
         index += 24;
         continue;
       }
     }
-    index += 16;
+    index += 4;
   }
   return 0;
 }
