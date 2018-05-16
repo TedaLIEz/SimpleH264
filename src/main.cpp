@@ -41,6 +41,6 @@ void test_golomb() {
   auto rst = golomb::get_sev_encode(-15, uev, len);
   std::cout << "encode len " << len << std::endl;
   std::cout << "encode rst " << (int)uev[0] << std::endl;
-  rst = golomb::get_sev_decode(uev, 0, 0);
+  rst = golomb::get_sev_decode(uev, 0, 0, len);
   std::cout << "decode rst " << rst << std::endl;
 }

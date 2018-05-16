@@ -40,25 +40,31 @@ TEST(Golomb, Golomb_uev_encode_test) {
 
 TEST(Golomb, Golomb_uev_decode_test) {
   unsigned char buf1[] = {0b10000000};
-  auto rst = golomb::get_uev_decode(buf1, 0, 0);
+  long len = -1;
+  auto rst = golomb::get_uev_decode(buf1, 0, 0, len);
   EXPECT_EQ(rst, 0);
+  EXPECT_EQ(len, 1);
 
   unsigned char buf2[] = {0b01000000};
-  rst = golomb::get_uev_decode(buf2, 0, 0);
+  rst = golomb::get_uev_decode(buf2, 0, 0, len);
   EXPECT_EQ(rst, 1);
+  EXPECT_EQ(len, 3);
 
   unsigned char buf3[] = {0b00110000};
-  rst = golomb::get_uev_decode(buf3, 0, 0);
+  rst = golomb::get_uev_decode(buf3, 0, 0, len);
   EXPECT_EQ(rst, 5);
+  EXPECT_EQ(len, 5);
 
 
   unsigned char buf4[] = {0b00010010};
-  rst = golomb::get_uev_decode(buf4, 0, 0);
+  rst = golomb::get_uev_decode(buf4, 0, 0, len);
   EXPECT_EQ(rst, 8);
+  EXPECT_EQ(len, 7);
 
   unsigned char buf5[] = {0b00001000, 0b00000000};
-  rst = golomb::get_uev_decode(buf5, 0, 0);
+  rst = golomb::get_uev_decode(buf5, 0, 0, len);
   EXPECT_EQ(rst, 15);
+  EXPECT_EQ(len, 9);
 }
 
 TEST(Golomb, Golomb_sev_encode_test) {
@@ -85,15 +91,19 @@ TEST(Golomb, Golomb_sev_encode_test) {
 
 TEST(Golomb, Golomb_sev_decode_test) {
   unsigned char buf1[] = {0b10000000};
-  auto rst = golomb::get_sev_decode(buf1, 0, 0);
+  long len = -1;
+  auto rst = golomb::get_sev_decode(buf1, 0, 0, len);
   EXPECT_EQ(rst, 0);
+  EXPECT_EQ(len, 1);
 
   unsigned char buf2[] = {0b00010000};
-  rst = golomb::get_sev_decode(buf2, 0, 0);
+  rst = golomb::get_sev_decode(buf2, 0, 0, len);
   EXPECT_EQ(rst, 4);
+  EXPECT_EQ(len, 7);
 
 
   unsigned char buf3[] = {0b00001111, 0b10000000};
-  rst = golomb::get_sev_decode(buf3, 0, 0);
+  rst = golomb::get_sev_decode(buf3, 0, 0, len);
   EXPECT_EQ(rst, -15);
+  EXPECT_EQ(len, 9);
 }

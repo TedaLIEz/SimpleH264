@@ -31,7 +31,8 @@ void SpsParser::parse(unsigned char *data, unsigned long len) {
 #endif
   level_idc = bit::read_bytes(data, len, offset);
   offset += 8;
-  seq_parameter_set_id = golomb::get_uev_decode(data, offset);
+  long seq_len = -1;
+  seq_parameter_set_id = golomb::get_uev_decode(data, offset, seq_len);
 }
 
 int SpsParser::getProfile_idc() const {
