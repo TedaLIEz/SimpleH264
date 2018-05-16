@@ -21,5 +21,8 @@ class SpsParser : public Parser {
   int getLevel_idc() const;
   int getType() override;
 
+  int getSeq_param_set_id() const;
+
+  virtual ~SpsParser() override;
 };
 #endif //SIMPLEH264_SPS_H

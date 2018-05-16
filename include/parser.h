@@ -9,5 +9,6 @@ class Parser {
   Parser() = default;
   virtual void parse(unsigned char* data, unsigned long len) = 0;
   virtual int getType() = 0;
+  virtual ~Parser() = default;;
 };
 #endif //SIMPLEH264_PARSER_H

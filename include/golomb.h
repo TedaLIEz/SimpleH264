@@ -32,6 +32,7 @@ inline int get_uev_encode(unsigned int code_num, unsigned char* bits, long& len)
   return 0;
 }
 
+
 inline int get_uev_decode(unsigned char* buf, uint8_t bytePos, uint8_t bitPos) {
   if (bitPos > 8) {
     std::cerr << "bitPos out of boundary!!!" << std::endl;
@@ -62,6 +63,10 @@ inline int get_uev_decode(unsigned char* buf, uint8_t bytePos, uint8_t bitPos) {
   }
   return rst - 1;
 
+}
+
+inline int get_uev_decode(unsigned char* buf, unsigned long pos) {
+  return get_uev_decode(buf, (uint8_t)(pos / 8), (uint8_t)(pos % 8));
 }
 
 inline int get_sev_decode(unsigned char* buf, uint8_t bytePos, uint8_t bitPos) {

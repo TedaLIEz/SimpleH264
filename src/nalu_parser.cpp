@@ -20,6 +20,8 @@ int read_one_sodb(unsigned char *nalu, unsigned long &nalu_size) {
         std::cout << "find a emulation prevention bytes at " << index << std::endl;
 #endif
         auto start_bytes = (index + 16) / 8;
+        // don't use memcpy here, as if the objects overlap, the behavior is undefined
+        // ref: http://en.cppreference.com/w/c/string/byte/memcpy
         memmove(nalu + start_bytes, nalu + start_bytes + 1, nalu_size - start_bytes - 1);
         nalu_size -= 1;
         index += 24;

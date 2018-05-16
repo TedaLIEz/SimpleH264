@@ -1,9 +1,10 @@
 //
 // Created by aLIEzTed on 5/14/18.
 //
+#include <golomb.h>
 #include "sps.h"
 void SpsParser::parse(unsigned char *data, unsigned long len) {
-  int offset = 0;
+  unsigned long offset = 0;
   profile_idc = bit::read_bytes(data, len, offset);
   offset += 8;
   auto flags = static_cast<uint8_t>(bit::next_bit(data, len, 8, offset));
@@ -30,6 +31,7 @@ void SpsParser::parse(unsigned char *data, unsigned long len) {
 #endif
   level_idc = bit::read_bytes(data, len, offset);
   offset += 8;
+  seq_parameter_set_id = golomb::get_uev_decode(data, offset);
 }
 
 int SpsParser::getProfile_idc() const {
@@ -43,3 +45,9 @@ int SpsParser::getLevel_idc() const {
 int SpsParser::getType() {
   return id;
 }
+
+int SpsParser::getSeq_param_set_id() const {
+  return seq_parameter_set_id;
+}
+
+SpsParser::~SpsParser() = default;
