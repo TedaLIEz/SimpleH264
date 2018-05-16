@@ -68,15 +68,23 @@ class SpsTest : public ::testing::Test {
 
 SpsParser* SpsTest::spsParser = NULL;
 
-TEST_F(SpsTest, SPS_Parse_Profile_Test) {
+TEST_F(SpsTest, SPS_Profile_idc) {
   EXPECT_EQ(spsParser->getProfile_idc(), 0x64);
 }
 
-TEST_F(SpsTest, SPS_Parse_Level_Test) {
+TEST_F(SpsTest, SPS_Level_idc) {
   EXPECT_EQ(spsParser->getLevel_idc(), 0x29);
 }
 
-TEST_F(SpsTest, SPS_Parse_Seq_param_Test) {
+TEST_F(SpsTest, SPS_Seq_param_set_id) {
   EXPECT_EQ(spsParser->getSeq_param_set_id(), 0);
+}
+
+TEST_F(SpsTest, SPS_Chroma_format_idc) {
+  EXPECT_EQ(spsParser->getChroma_format_idc(), 1);
+}
+
+TEST_F(SpsTest, SPS_Separate_colour_plane_flag) {
+  EXPECT_EQ(spsParser->getSeparate_colour_plane_flag(), -1);
 }
 

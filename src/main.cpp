@@ -1,12 +1,7 @@
 #include <iostream>
-#include <debug.h>
 #include <nalu_parser.h>
-#include <parser.h>
-#include <sps.h>
-#include "io.h"
-#include "nalu.h"
+#include "debug.h"
 #include "golomb.h"
-
 void test_nalu();
 
 void test_golomb();

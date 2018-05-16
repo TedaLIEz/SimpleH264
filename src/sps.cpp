@@ -2,6 +2,7 @@
 // Created by aLIEzTed on 5/14/18.
 //
 #include <golomb.h>
+#include "debug.h"
 #include "sps.h"
 void SpsParser::parse(unsigned char *data, unsigned long len) {
   unsigned long offset = 0;
@@ -33,6 +34,25 @@ void SpsParser::parse(unsigned char *data, unsigned long len) {
   offset += 8;
   long seq_len = -1;
   seq_parameter_set_id = golomb::get_uev_decode(data, offset, seq_len);
+  ASSERT(seq_len > 0, "Error getting length of decode of the seq_param_set_id");
+  offset += seq_len;
+  if (profile_idc == 100 || profile_idc == 110 || profile_idc == 122 || profile_idc == 244 || profile_idc == 44
+      || profile_idc == 83 || profile_idc == 86 || profile_idc == 118 || profile_idc == 128 || profile_idc == 138
+      || profile_idc == 139 || profile_idc == 134 || profile_idc == 135) {
+#ifdef DEBUG
+    std::cout << "profile_idc satisfied, find chroma_format_idc " << std::endl;
+#endif
+    long chroma_len = -1;
+    chroma_format_idc = golomb::get_uev_decode(data, offset, chroma_len);
+    ASSERT(chroma_len > 0, "Error getting length of decode of the chroma_format_idc");
+    offset += chroma_len;
+    if (chroma_format_idc == 3) {
+      separate_colour_plane_flag = bit::get_bit(data, offset);
+      ASSERT(separate_colour_plane_flag == 0 || separate_colour_plane_flag == 1, "Invalid separate_colour_plane_flag");
+      offset += 1;
+    }
+
+  }
 }
 
 int SpsParser::getProfile_idc() const {
@@ -49,6 +69,15 @@ int SpsParser::getType() {
 
 int SpsParser::getSeq_param_set_id() const {
   return seq_parameter_set_id;
+}
+
+
+int SpsParser::getChroma_format_idc() const {
+  return chroma_format_idc;
+}
+
+int SpsParser::getSeparate_colour_plane_flag() const {
+  return separate_colour_plane_flag;
 }
 
 SpsParser::~SpsParser() = default;

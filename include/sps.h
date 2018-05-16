@@ -28,6 +28,10 @@ class SpsParser : public Parser {
 
   int getSeq_param_set_id() const;
 
+  int getChroma_format_idc() const;
+
+  int getSeparate_colour_plane_flag() const;
+
   virtual ~SpsParser() override;
 };
 #endif //SIMPLEH264_SPS_H
