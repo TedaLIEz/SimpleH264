@@ -91,7 +91,19 @@ void SpsParser::parse(unsigned char *data, unsigned long len) {
 #endif
       }
     }
-
+    long log2_max_frame_num_minus4_len = 0;
+    log2_max_frame_num_minus4 = golomb::get_uev_decode(data, offset, log2_max_frame_num_minus4_len);
+    ASSERT(log2_max_frame_num_minus4_len > 0, "Error getting length of decode of the log2_max_frame_num_minus4");
+    offset += log2_max_frame_num_minus4_len;
+    long pic_order_cnt_type_len = 0;
+    pic_order_cnt_type = golomb::get_uev_decode(data, offset, pic_order_cnt_type_len);
+    ASSERT(pic_order_cnt_type_len > 0, "Error getting length of decode of the pic_order_cnt_type");
+    offset += pic_order_cnt_type_len;
+    if (pic_order_cnt_type == 0) {
+      long log2_max_pic_order_cnt_lsb_minus4_len = 0;
+      log2_max_pic_order_cnt_lsb_minus4 = golomb::get_uev_decode(data, offset, log2_max_pic_order_cnt_lsb_minus4_len);
+      ASSERT(log2_max_pic_order_cnt_lsb_minus4_len > 0, "Error getting length of decode of the log2_max_pic_order_cnt_lsb_minus4");
+    }
 
 
   }

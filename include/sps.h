@@ -28,7 +28,9 @@ class SpsParser : public Parser {
   int scaling_list_64[64]{};
   bool use_default_scaling_matrix_flag_16[16]{};
   bool use_default_scaling_matrix_flag_64[64]{};
-
+  int log2_max_frame_num_minus4;
+  int pic_order_cnt_type;
+  int log2_max_pic_order_cnt_lsb_minus4;
 #ifdef _TEST
   FRIEND_TEST(SpsTestCase, SPS_Depth_chroma);
   FRIEND_TEST(SpsTestCase, SPS_Qpprime_y_zero_transform_bypass_flag);
@@ -38,6 +40,9 @@ class SpsParser : public Parser {
   FRIEND_TEST(SpsTestCase, SPS_Scaling_list_size_Test);
 
   FRIEND_TEST(SpsScalingListTest, SPS_Scaling_list);
+  FRIEND_TEST(SpsTestCase, SPS_Log2_max_frame_num_minus4);
+  FRIEND_TEST(SpsTestCase, SPS_Pic_order_cnt_type);
+  FRIEND_TEST(SpsTestCase, SPS_log2_max_pic_order_cnt_lsb_minus4);
 #endif
 
   void scaling_list(unsigned char *data,

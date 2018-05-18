@@ -31,7 +31,7 @@ class SpsTestCase : public ::testing::Test {
                                    0x00,
                                    0x29,
                                    0xac,   // 0b 1 010 1 1 0 0
-                                   0xc8,   // 0b 11001000
+                                   0xc8,   // 0b 1 1 00100 0
                                    0x50,
                                    0x1e,
                                    0x00,
@@ -121,6 +121,18 @@ TEST_F(SpsTestCase, SPS_Seq_scaling_matrix_present_flag) {
 
 TEST_F(SpsTestCase, SPS_Scaling_list_size_Test) {
   EXPECT_EQ(spsParser1->seq_scaling_list_present_flag.size(), 8);
+}
+
+TEST_F(SpsTestCase, SPS_Log2_max_frame_num_minus4) {
+  EXPECT_EQ(spsParser2->log2_max_frame_num_minus4, 0);
+}
+
+TEST_F(SpsTestCase, SPS_Pic_order_cnt_type) {
+  EXPECT_EQ(spsParser2->pic_order_cnt_type, 0);
+}
+
+TEST_F(SpsTestCase, SPS_log2_max_pic_order_cnt_lsb_minus4) {
+  EXPECT_EQ(spsParser2->log2_max_pic_order_cnt_lsb_minus4, 3);
 }
 
 TEST(SpsScalingListTest, SPS_Scaling_list) {
