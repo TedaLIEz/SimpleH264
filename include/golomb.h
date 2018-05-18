@@ -33,15 +33,16 @@ inline int get_uev_encode(unsigned int code_num, unsigned char* bits, long& len)
 }
 
 
-inline int get_uev_decode(unsigned char* buf, uint8_t bytePos, uint8_t bitPos, long& len) {
+inline int get_uev_decode(unsigned char* buf, uint bytePos, uint bitPos, long& len) {
   if (bitPos > 8) {
     std::cerr << "bitPos out of boundary!!!" << std::endl;
     return -1;
   }
-  uint8_t bit = 0, prefixZeroCnt = 0;
+  uint start = bitPos;
+  uint bit = 0, prefixZeroCnt = 0;
   int rst = 0;
   while (true) {
-    bit = bit::get_bit(buf, bytePos, bitPos);
+    bit = bit::get_bit(buf, bytePos + bitPos / 8, bitPos % 8);
     if (bit == 0) {
       prefixZeroCnt++;
       bitPos++;
@@ -53,13 +54,9 @@ inline int get_uev_decode(unsigned char* buf, uint8_t bytePos, uint8_t bitPos, l
     len = 1;
     return 0;
   }
-#ifdef DEBUG
-  std::cout << "method: get_uev_decode " << std::endl;
-  std::cout << "prefixZeroCnt " << (int)prefixZeroCnt << std::endl;
-#endif
   len = prefixZeroCnt * 2 + 1;
   for (int i = 0; i < prefixZeroCnt + 1; i++) {
-    bit = bit::get_bit(buf, bytePos + (i + prefixZeroCnt) / 8, bitPos++ % 8);
+    bit = bit::get_bit(buf, bytePos + (i + prefixZeroCnt + start) / 8, bitPos++ % 8);
     int tmp = bit << (prefixZeroCnt - i);
     rst += tmp;
   }
@@ -68,10 +65,10 @@ inline int get_uev_decode(unsigned char* buf, uint8_t bytePos, uint8_t bitPos, l
 }
 
 inline int get_uev_decode(unsigned char* buf, unsigned long pos, long& len) {
-  return get_uev_decode(buf, (uint8_t)(pos / 8), (uint8_t)(pos % 8), len);
+  return get_uev_decode(buf, static_cast<uint>(pos / 8), static_cast<uint>(pos % 8), len);
 }
 
-inline int get_sev_decode(unsigned char* buf, uint8_t bytePos, uint8_t bitPos, long& len) {
+inline int get_sev_decode(unsigned char* buf, uint bytePos, uint bitPos, long& len) {
   int uev = get_uev_decode(buf, bytePos, bitPos, len);
   if (uev == 0) {
     return 0;
@@ -82,6 +79,10 @@ inline int get_sev_decode(unsigned char* buf, uint8_t bytePos, uint8_t bitPos, l
   } else {
     return rst;
   }
+}
+
+inline int get_sev_decode(unsigned char* buf, unsigned long pos, long& len) {
+  return get_sev_decode(buf, static_cast<uint>(pos / 8), static_cast<uint>(pos % 8), len);
 }
 
 inline int get_sev_encode(int code_num, unsigned char* bits, long& len) {

@@ -2,6 +2,7 @@
 #include <nalu_parser.h>
 #include "debug.h"
 #include "golomb.h"
+#include "sps.h"
 void test_nalu();
 
 void test_golomb();
@@ -18,7 +19,8 @@ void test_nalu() {
   if (!file.is_open()) {
     return;
   }
-  if (read_one_nalu(file, 0, nalu, size)) {
+  unsigned long offset = 0;
+  if (read_one_nalu(file, offset, nalu, size)) {
     std::cout << "read data length in bytes " << size << std::endl;
     read_one_sodb(nalu, size);
     for (int i = 0; i < size; i++) {
@@ -28,6 +30,31 @@ void test_nalu() {
     auto header = parse_header(nalu, size);
     std::cout << "header " << header << std::endl;
   }
+  offset += size;
+  offset += 4;
+  if (read_one_nalu(file, offset, nalu, size)) {
+    std::cout << "read another data length in bytes " << size << std::endl;
+    read_one_sodb(nalu, size);
+    for (int i = 0; i < size; i++) {
+      PRINT_HEX((unsigned int)*(nalu + i));
+    }
+    std::cout << "sodb length in bytes " << size << std::endl;
+    auto header = parse_header(nalu, size);
+    std::cout << "header " << header << std::endl;
+  }
+  offset += size;
+  offset += 3;
+  if (read_one_nalu(file, offset, nalu, size)) {
+    std::cout << "read another data length in bytes " << size << std::endl;
+    read_one_sodb(nalu, size);
+    for (int i = 0; i < size; i++) {
+      PRINT_HEX((unsigned int)*(nalu + i));
+    }
+    std::cout << "sodb length in bytes " << size << std::endl;
+    auto header = parse_header(nalu, size);
+    std::cout << "header " << header << std::endl;
+  }
+
 }
 
 void test_golomb() {

@@ -6,8 +6,10 @@
 #define SIMPLEH264_SPS_H
 #include "parser.h"
 #include "bitutil.h"
+#include <vector>
 #ifdef _TEST
 #include <gtest/gtest_prod.h>
+#include <vector>
 #endif
 class SpsParser : public Parser {
  private:
@@ -21,16 +23,31 @@ class SpsParser : public Parser {
   int bit_depth_chroma_minus8 = -1;
   bool qpprime_y_zero_transform_bypass_flag;
   bool seq_scaling_matrix_present_flag;
+  std::vector<bool> seq_scaling_list_present_flag;
+  int scaling_list_16[16]{};
+  int scaling_list_64[64]{};
+  bool use_default_scaling_matrix_flag_16[16]{};
+  bool use_default_scaling_matrix_flag_64[64]{};
+
 #ifdef _TEST
   FRIEND_TEST(SpsTest, SPS_Depth_chroma);
   FRIEND_TEST(SpsTest, SPS_Qpprime_y_zero_transform_bypass_flag);
   FRIEND_TEST(SpsTest, SPS_Seq_scaling_matrix_present_flag);
   FRIEND_TEST(SpsTest, SPS_Depth_luma);
   FRIEND_TEST(SpsTest, SPS_Separate_colour_plane_flag);
+  FRIEND_TEST(SpsTest, SPS_Scaling_list_size_Test);
+
+  FRIEND_TEST(SpsScalingListTest, SPS_Scaling_list);
 #endif
+
+  void scaling_list(unsigned char *data,
+                   unsigned long& offset,
+                   int& scalingList,
+                   int sizeOfScalingList,
+                   bool &useDefaultScalingMatrixFlag);
  public:
-  SpsParser() : Parser() {}
-  void parse(unsigned char* data, unsigned long len) override;
+  SpsParser() : Parser(), qpprime_y_zero_transform_bypass_flag(false), seq_scaling_matrix_present_flag(false) {}
+  void parse(unsigned char *data, unsigned long len) override;
 
   int getProfile_idc() const;
 

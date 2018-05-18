@@ -70,15 +70,15 @@ inline uint8_t read_bytes(unsigned char* bits, unsigned long len, int offset) {
   return static_cast<uint8_t>(next_bit(bits, len, 8, offset));
 }
 
-inline uint8_t get_bit(unsigned char* bits, uint8_t bytePos, uint8_t bitPos) {
-  uint8_t mask = 0, val = 0;
+inline uint get_bit(unsigned char* bits, uint bytePos, uint bitPos) {
+  uint mask = 0, val = 0;
 
   mask = 1 << (7 - bitPos);
   val = ((bits[bytePos] & mask) != 0);
   return val;
 }
 
-inline int get_bit(long bits, uint8_t bitPos) {
+inline int get_bit(long bits, uint bitPos) {
   uint8_t mask = 0;
   int val = 0;
 
