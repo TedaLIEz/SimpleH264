@@ -51,7 +51,21 @@ void SpsParser::parse(unsigned char *data, unsigned long len) {
       ASSERT(separate_colour_plane_flag == 0 || separate_colour_plane_flag == 1, "Invalid separate_colour_plane_flag");
       offset += 1;
     }
+    long luma_minus8_len = -1;
+    bit_depth_luma_minus8 = golomb::get_uev_decode(data, offset, luma_minus8_len);
+    ASSERT(chroma_len > 0, "Error getting length of decode of the bit_depth_luma_minus8");
+    offset += luma_minus8_len;
+    long chroma_minus8_len = -1;
+    bit_depth_chroma_minus8 = golomb::get_uev_decode(data, offset, chroma_minus8_len);
+    ASSERT(chroma_minus8_len > 0, "Error getting length of decode of the bit_depth_chroma_minus8");
+    offset += chroma_minus8_len;
+    qpprime_y_zero_transform_bypass_flag = static_cast<bool>(bit::get_bit(data, offset));
+    offset += 1;
+    seq_scaling_matrix_present_flag = static_cast<bool>(bit::get_bit(data, offset));
+    offset += 1;
+    if (seq_scaling_matrix_present_flag) {
 
+    }
   }
 }
 
@@ -78,6 +92,22 @@ int SpsParser::getChroma_format_idc() const {
 
 int SpsParser::getSeparate_colour_plane_flag() const {
   return separate_colour_plane_flag;
+}
+
+int SpsParser::getBit_depth_chroma_minus8() const {
+  return bit_depth_chroma_minus8;
+}
+
+int SpsParser::getBit_depth_luma_minus8() const {
+  return bit_depth_luma_minus8;
+}
+
+bool SpsParser::isQpprime_y_zero_transform_bypass_flag() const {
+  return qpprime_y_zero_transform_bypass_flag;
+}
+
+bool SpsParser::isSeq_scaling_matrix_present_flag() const {
+  return seq_scaling_matrix_present_flag;
 }
 
 SpsParser::~SpsParser() = default;

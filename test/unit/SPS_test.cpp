@@ -13,7 +13,7 @@ class SpsTest : public ::testing::Test {
   unsigned char mock_data[28] = {0x64,
                                      0x00,
                                      0x29,
-                                     0xac,
+                                     0xac,   // 0b10101100
                                      0xc8,
                                      0x50,
                                      0x1e,
@@ -84,7 +84,28 @@ TEST_F(SpsTest, SPS_Chroma_format_idc) {
   EXPECT_EQ(spsParser->getChroma_format_idc(), 1);
 }
 
+
+// private test starts
 TEST_F(SpsTest, SPS_Separate_colour_plane_flag) {
-  EXPECT_EQ(spsParser->getSeparate_colour_plane_flag(), -1);
+  EXPECT_EQ(spsParser->separate_colour_plane_flag, -1);
 }
+
+TEST_F(SpsTest, SPS_Depth_luma) {
+  EXPECT_EQ(spsParser->bit_depth_luma_minus8, 0);
+}
+
+TEST_F(SpsTest, SPS_Depth_chroma) {
+  EXPECT_EQ(spsParser->bit_depth_chroma_minus8, 0);
+}
+
+TEST_F(SpsTest, SPS_Qpprime_y_zero_transform_bypass_flag) {
+  EXPECT_EQ(spsParser->qpprime_y_zero_transform_bypass_flag, false);
+}
+
+TEST_F(SpsTest, SPS_Seq_scaling_matrix_present_flag) {
+  EXPECT_EQ(spsParser->seq_scaling_matrix_present_flag, false);
+}
+
+// private test ends
+
 

@@ -6,6 +6,9 @@
 #define SIMPLEH264_SPS_H
 #include "parser.h"
 #include "bitutil.h"
+#ifdef _TEST
+#include <gtest/gtest_prod.h>
+#endif
 class SpsParser : public Parser {
  private:
   const int id = 7;
@@ -16,7 +19,15 @@ class SpsParser : public Parser {
   int separate_colour_plane_flag = -1;
   int bit_depth_luma_minus8 = -1;
   int bit_depth_chroma_minus8 = -1;
-
+  bool qpprime_y_zero_transform_bypass_flag;
+  bool seq_scaling_matrix_present_flag;
+#ifdef _TEST
+  FRIEND_TEST(SpsTest, SPS_Depth_chroma);
+  FRIEND_TEST(SpsTest, SPS_Qpprime_y_zero_transform_bypass_flag);
+  FRIEND_TEST(SpsTest, SPS_Seq_scaling_matrix_present_flag);
+  FRIEND_TEST(SpsTest, SPS_Depth_luma);
+  FRIEND_TEST(SpsTest, SPS_Separate_colour_plane_flag);
+#endif
  public:
   SpsParser() : Parser() {}
   void parse(unsigned char* data, unsigned long len) override;
@@ -32,6 +43,13 @@ class SpsParser : public Parser {
 
   int getSeparate_colour_plane_flag() const;
 
+  int getBit_depth_luma_minus8() const;
+
+  int getBit_depth_chroma_minus8() const;
+
+  bool isQpprime_y_zero_transform_bypass_flag() const;
+
+  bool isSeq_scaling_matrix_present_flag() const;
   virtual ~SpsParser() override;
 };
 #endif //SIMPLEH264_SPS_H
