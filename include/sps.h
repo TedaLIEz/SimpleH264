@@ -30,12 +30,12 @@ class SpsParser : public Parser {
   bool use_default_scaling_matrix_flag_64[64]{};
 
 #ifdef _TEST
-  FRIEND_TEST(SpsTest, SPS_Depth_chroma);
-  FRIEND_TEST(SpsTest, SPS_Qpprime_y_zero_transform_bypass_flag);
-  FRIEND_TEST(SpsTest, SPS_Seq_scaling_matrix_present_flag);
-  FRIEND_TEST(SpsTest, SPS_Depth_luma);
-  FRIEND_TEST(SpsTest, SPS_Separate_colour_plane_flag);
-  FRIEND_TEST(SpsTest, SPS_Scaling_list_size_Test);
+  FRIEND_TEST(SpsTestCase, SPS_Depth_chroma);
+  FRIEND_TEST(SpsTestCase, SPS_Qpprime_y_zero_transform_bypass_flag);
+  FRIEND_TEST(SpsTestCase, SPS_Seq_scaling_matrix_present_flag);
+  FRIEND_TEST(SpsTestCase, SPS_Depth_luma);
+  FRIEND_TEST(SpsTestCase, SPS_Separate_colour_plane_flag);
+  FRIEND_TEST(SpsTestCase, SPS_Scaling_list_size_Test);
 
   FRIEND_TEST(SpsScalingListTest, SPS_Scaling_list);
 #endif
