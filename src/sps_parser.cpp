@@ -32,24 +32,20 @@ Sps SpsParser::parse(unsigned char *data, unsigned long len) {
 #endif
   sps.level_idc = bit::read_bytes(data, len, offset);
   offset += 8;
-  long seq_len = -1;
-  sps.seq_parameter_set_id = golomb::get_uev_decode(data, offset, seq_len);
-  ASSERT(seq_len > 0, "Error getting length of decode of the seq_param_set_id");
-  offset += seq_len;
+
+  sps.seq_parameter_set_id = uev_decode(data, offset, "seq_parameter_set_id");
   if (profile_idc == 100 || profile_idc == 110 || profile_idc == 122 || profile_idc == 244 || profile_idc == 44
       || profile_idc == 83 || profile_idc == 86 || profile_idc == 118 || profile_idc == 128 || profile_idc == 138
       || profile_idc == 139 || profile_idc == 134 || profile_idc == 135) {
 
-    long chroma_len = -1;
-    sps.chroma_format_idc = golomb::get_uev_decode(data, offset, chroma_len);
-    ASSERT(chroma_len > 0, "Error getting length of decode of the chroma_format_idc");
-    offset += chroma_len;
+    sps.chroma_format_idc = uev_decode(data, offset, "chroma_format_idc");
 #ifdef DEBUG
     std::cout << "profile_idc satisfied, find chroma_format_idc " << sps.chroma_format_idc << std::endl;
 #endif
     if (sps.chroma_format_idc == 3) {
       sps.separate_colour_plane_flag = bit::get_bit(data, offset);
-      ASSERT(sps.separate_colour_plane_flag == 0 || sps.separate_colour_plane_flag == 1, "Invalid separate_colour_plane_flag");
+      ASSERT(sps.separate_colour_plane_flag == 0 || sps.separate_colour_plane_flag == 1,
+             "Invalid separate_colour_plane_flag");
       offset += 1;
     }
     unsigned long scaling_list_flag_len = 12;
@@ -57,14 +53,9 @@ Sps SpsParser::parse(unsigned char *data, unsigned long len) {
       scaling_list_flag_len = 8;
     }
     sps.seq_scaling_list_present_flag.resize(scaling_list_flag_len);
-    long luma_minus8_len = -1;
-    sps.bit_depth_luma_minus8 = golomb::get_uev_decode(data, offset, luma_minus8_len);
-    ASSERT(chroma_len > 0, "Error getting length of decode of the bit_depth_luma_minus8");
-    offset += luma_minus8_len;
-    long chroma_minus8_len = -1;
-    sps.bit_depth_chroma_minus8 = golomb::get_uev_decode(data, offset, chroma_minus8_len);
-    ASSERT(chroma_minus8_len > 0, "Error getting length of decode of the bit_depth_chroma_minus8");
-    offset += chroma_minus8_len;
+
+    sps.bit_depth_luma_minus8 = uev_decode(data, offset, "bit_depth_luma_minus8");
+    sps.bit_depth_chroma_minus8 = uev_decode(data, offset, "bit_depth_chroma_minus8");
     sps.qpprime_y_zero_transform_bypass_flag = static_cast<bool>(bit::get_bit(data, offset));
     offset += 1;
     sps.seq_scaling_matrix_present_flag = static_cast<bool>(bit::get_bit(data, offset));
@@ -91,52 +82,65 @@ Sps SpsParser::parse(unsigned char *data, unsigned long len) {
 #endif
       }
     }
-    long log2_max_frame_num_minus4_len = 0;
-    sps.log2_max_frame_num_minus4 = golomb::get_uev_decode(data, offset, log2_max_frame_num_minus4_len);
-    ASSERT(log2_max_frame_num_minus4_len > 0, "Error getting length of decode of the log2_max_frame_num_minus4");
-    offset += log2_max_frame_num_minus4_len;
-    long pic_order_cnt_type_len = 0;
-    sps.pic_order_cnt_type = golomb::get_uev_decode(data, offset, pic_order_cnt_type_len);
-    ASSERT(pic_order_cnt_type_len > 0, "Error getting length of decode of the pic_order_cnt_type");
-    offset += pic_order_cnt_type_len;
-    if (sps.pic_order_cnt_type == 0) {
-      long log2_max_pic_order_cnt_lsb_minus4_len = 0;
-      sps.log2_max_pic_order_cnt_lsb_minus4 = golomb::get_uev_decode(data, offset, log2_max_pic_order_cnt_lsb_minus4_len);
-      ASSERT(log2_max_pic_order_cnt_lsb_minus4_len > 0,
-             "Error getting length of decode of the log2_max_pic_order_cnt_lsb_minus4");
-      offset += log2_max_frame_num_minus4_len;
-    } else if (sps.pic_order_cnt_type == 1) {
-      sps.delta_pic_order_always_zero_flag = static_cast<bool>(bit::get_bit(data, offset));
-      offset += 1;
-      long offset_for_non_ref_pic_len = 0;
-      sps.offset_for_non_ref_pic = golomb::get_sev_decode(data, offset, offset_for_non_ref_pic_len);
-      ASSERT(offset_for_non_ref_pic_len > 0, "Error getting length of decode of the offset_for_non_ref_pic");
-      offset += offset_for_non_ref_pic_len;
-      long offset_for_top_to_bottom_field_len = 0;
-      sps.offset_for_top_to_bottom_field = golomb::get_sev_decode(data, offset, offset_for_top_to_bottom_field_len);
-      ASSERT(offset_for_top_to_bottom_field_len > 0,
-             "Error getting length of decode of the offset_for_top_to_bottom_field");
-      offset += offset_for_top_to_bottom_field_len;
-      long num_ref_frames_in_pic_order_cnt_cycle_len = 0;
-      sps.num_ref_frames_in_pic_order_cnt_cycle =
-          golomb::get_uev_decode(data, offset, num_ref_frames_in_pic_order_cnt_cycle_len);
-      ASSERT(num_ref_frames_in_pic_order_cnt_cycle_len > 0,
-             "Error getting length of decode of the offset_for_top_to_bottom_field");
-      offset += num_ref_frames_in_pic_order_cnt_cycle_len;
-      sps.offset_for_ref_frame.resize(sps.num_ref_frames_in_pic_order_cnt_cycle);
-      for (int i = 0; i < sps.num_ref_frames_in_pic_order_cnt_cycle; i++) {
-        long offset_for_ref_frame_len = 0;
-        auto _offset_for_ref_frame = golomb::get_sev_decode(data, offset, offset_for_ref_frame_len);
-        std::ostringstream stringStream;
-        stringStream << "Error getting length of decode of the _offset_for_ref_frame at " << i;
-        ASSERT(offset_for_ref_frame_len > 0,
-               stringStream.str());
-        offset += offset_for_ref_frame_len;
-        sps.offset_for_ref_frame.push_back(_offset_for_ref_frame);
-      }
-    }
-
   }
+
+  sps.log2_max_frame_num_minus4 = uev_decode(data, offset, "log2_max_frame_num_minus4");
+  sps.pic_order_cnt_type = uev_decode(data, offset, "pic_order_cnt_type");
+  if (sps.pic_order_cnt_type == 0) {
+    sps.log2_max_pic_order_cnt_lsb_minus4 = uev_decode(data, offset, "log2_max_pic_order_cnt_lsb_minus4");
+  } else if (sps.pic_order_cnt_type == 1) {
+    sps.delta_pic_order_always_zero_flag = static_cast<bool>(bit::get_bit(data, offset));
+    offset += 1;
+
+    sps.offset_for_non_ref_pic = sev_decode(data, offset, "offset_for_non_ref_pic");
+
+    sps.offset_for_top_to_bottom_field = sev_decode(data, offset, "offset_for_top_to_bottom_field");
+
+    sps.num_ref_frames_in_pic_order_cnt_cycle = uev_decode(data, offset, "num_ref_frames_in_pic_order_cnt_cycle");
+
+    sps.offset_for_ref_frame.resize(sps.num_ref_frames_in_pic_order_cnt_cycle);
+    for (int i = 0; i < sps.num_ref_frames_in_pic_order_cnt_cycle; i++) {
+      long offset_for_ref_frame_len = -1;
+      auto _offset_for_ref_frame = golomb::get_sev_decode(data, offset, offset_for_ref_frame_len);
+      std::ostringstream stringStream;
+      stringStream << "Error getting length of decode of the _offset_for_ref_frame at " << i;
+      ASSERT(offset_for_ref_frame_len > 0,
+             stringStream.str());
+      offset += offset_for_ref_frame_len;
+      sps.offset_for_ref_frame.push_back(_offset_for_ref_frame);
+    }
+  }
+
+  sps.max_num_ref_frames = uev_decode(data, offset, "max_num_ref_frames");
+  sps.gaps_in_frame_num_value_allowed_flag = static_cast<bool>(bit::get_bit(data, offset));
+  offset += 1;
+
+  sps.pic_width_in_mbs_minus1 = uev_decode(data, offset, "pic_width_in_mbs_minus1");
+  sps.pic_height_in_map_units_minus1 = uev_decode(data, offset, "pic_height_in_map_units_minus1");
+
+  sps.frame_mbs_only_flag = static_cast<bool>(bit::get_bit(data, offset));
+  offset += 1;
+
+  if (!sps.frame_mbs_only_flag) {
+    sps.mb_adaptive_frame_field_flag = static_cast<bool>(bit::get_bit(data, offset));
+    offset += 1;
+  }
+
+  sps.direct_8x8_inference_flag = static_cast<bool>(bit::get_bit(data, offset));
+  offset += 1;
+
+  sps.frame_cropping_flag = static_cast<bool>(bit::get_bit(data, offset));
+  offset += 1;
+  if (sps.frame_cropping_flag) {
+    sps.frame_crop_left_offset = uev_decode(data, offset, "frame_crop_left_offset");
+    sps.frame_crop_right_offset = uev_decode(data, offset, "frame_crop_right_offset");
+    sps.frame_crop_top_offset = uev_decode(data, offset, "frame_crop_top_offset");
+    sps.frame_crop_bottom_offset = uev_decode(data, offset, "frame_crop_bottom_offset");
+  }
+
+  sps.vui_parameters_present_flag = static_cast<bool>(bit::get_bit(data, offset));
+  offset += 1;
+  // TODO: vui param
   return sps;
 }
 
@@ -164,7 +168,6 @@ void SpsParser::scaling_list(unsigned char *data,
   }
 
 }
-
 
 int SpsParser::getType() {
   return id;
