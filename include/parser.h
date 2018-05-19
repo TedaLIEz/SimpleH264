@@ -4,11 +4,15 @@
 
 #ifndef SIMPLEH264_PARSER_H
 #define SIMPLEH264_PARSER_H
+#include "sps.h"
+template <class T>
 class Parser {
  public:
   Parser() = default;
-  virtual void parse(unsigned char* data, unsigned long len) = 0;
+  virtual T parse(unsigned char* data, unsigned long len) = 0;
   virtual int getType() = 0;
   virtual ~Parser() = default;;
 };
+
+
 #endif //SIMPLEH264_PARSER_H
