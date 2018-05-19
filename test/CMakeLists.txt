@@ -19,7 +19,7 @@ set(C_PARSER_SRC
         unit/SPS_test.cpp
         unit/Golomb_test.cpp
         ../src/nalu_parser.cpp
-        ../src/sps.cpp
+        ../src/sps_parser.cpp
         )
 
 add_executable(SimpleH264_Test ${C_PARSER_SRC} ${C_PARSER_HEAD})

@@ -4,7 +4,7 @@
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include "sps.h"
+#include "sps_parser.h"
 
 class SpsTestCase : public ::testing::Test {
  protected:

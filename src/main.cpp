@@ -2,7 +2,7 @@
 #include <nalu_parser.h>
 #include "debug.h"
 #include "golomb.h"
-#include "sps.h"
+#include "sps_parser.h"
 void test_nalu();
 
 void test_golomb();
