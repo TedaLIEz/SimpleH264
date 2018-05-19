@@ -2,6 +2,7 @@
 // Created by aLIEzTed on 5/14/18.
 //
 #include <golomb.h>
+#include <sstream>
 #include "debug.h"
 #include "sps.h"
 void SpsParser::parse(unsigned char *data, unsigned long len) {
@@ -78,7 +79,7 @@ void SpsParser::parse(unsigned char *data, unsigned long len) {
 #endif
         if (seq_scaling_list_present_flag[i]) {
 #ifdef DEBUG
-          std::cout << "find seq_scaling_list_present_flag in index " << i  << "at offset " << offset << std::endl;
+          std::cout << "find seq_scaling_list_present_flag in index " << i << "at offset " << offset << std::endl;
 #endif
           if (i < 6) {
             scaling_list(data, offset, scaling_list_16[i], 16, use_default_scaling_matrix_flag_16[i]);
@@ -102,18 +103,48 @@ void SpsParser::parse(unsigned char *data, unsigned long len) {
     if (pic_order_cnt_type == 0) {
       long log2_max_pic_order_cnt_lsb_minus4_len = 0;
       log2_max_pic_order_cnt_lsb_minus4 = golomb::get_uev_decode(data, offset, log2_max_pic_order_cnt_lsb_minus4_len);
-      ASSERT(log2_max_pic_order_cnt_lsb_minus4_len > 0, "Error getting length of decode of the log2_max_pic_order_cnt_lsb_minus4");
+      ASSERT(log2_max_pic_order_cnt_lsb_minus4_len > 0,
+             "Error getting length of decode of the log2_max_pic_order_cnt_lsb_minus4");
+      offset += log2_max_frame_num_minus4_len;
+    } else if (pic_order_cnt_type == 1) {
+      delta_pic_order_always_zero_flag = static_cast<bool>(bit::get_bit(data, offset));
+      offset += 1;
+      long offset_for_non_ref_pic_len = 0;
+      offset_for_non_ref_pic = golomb::get_sev_decode(data, offset, offset_for_non_ref_pic_len);
+      ASSERT(offset_for_non_ref_pic_len > 0, "Error getting length of decode of the offset_for_non_ref_pic");
+      offset += offset_for_non_ref_pic_len;
+      long offset_for_top_to_bottom_field_len = 0;
+      offset_for_top_to_bottom_field = golomb::get_sev_decode(data, offset, offset_for_top_to_bottom_field_len);
+      ASSERT(offset_for_top_to_bottom_field_len > 0,
+             "Error getting length of decode of the offset_for_top_to_bottom_field");
+      offset += offset_for_top_to_bottom_field_len;
+      long num_ref_frames_in_pic_order_cnt_cycle_len = 0;
+      num_ref_frames_in_pic_order_cnt_cycle =
+          golomb::get_uev_decode(data, offset, num_ref_frames_in_pic_order_cnt_cycle_len);
+      ASSERT(num_ref_frames_in_pic_order_cnt_cycle_len > 0,
+             "Error getting length of decode of the offset_for_top_to_bottom_field");
+      offset += num_ref_frames_in_pic_order_cnt_cycle_len;
+      offset_for_ref_frame.resize(num_ref_frames_in_pic_order_cnt_cycle);
+      for (int i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++) {
+        long offset_for_ref_frame_len = 0;
+        auto _offset_for_ref_frame = golomb::get_sev_decode(data, offset, offset_for_ref_frame_len);
+        std::ostringstream stringStream;
+        stringStream << "Error getting length of decode of the _offset_for_ref_frame at " << i;
+        ASSERT(offset_for_ref_frame_len > 0,
+               stringStream.str());
+        offset += offset_for_ref_frame_len;
+        offset_for_ref_frame.push_back(_offset_for_ref_frame);
+      }
     }
-
 
   }
 }
 
 void SpsParser::scaling_list(unsigned char *data,
-                            unsigned long& offset,
-                            int& scalingList,
-                            int sizeOfScalingList,
-                            bool &useDefaultScalingMatrixFlag) {
+                             unsigned long &offset,
+                             int &scalingList,
+                             int sizeOfScalingList,
+                             bool &useDefaultScalingMatrixFlag) {
   int lastScale = 8;
   int nextScale = 8;
   int delta_scale;

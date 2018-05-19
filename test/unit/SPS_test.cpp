@@ -62,7 +62,8 @@ class SpsTestCase : public ::testing::Test {
   // Called after the last test in this test case.
   // Can be omitted if not needed.
   static void TearDownTestCase() {
-    delete spsParser1, spsParser2;
+    delete spsParser1;
+    delete spsParser2;
     spsParser1 = nullptr;
     spsParser2 = nullptr;
   }
