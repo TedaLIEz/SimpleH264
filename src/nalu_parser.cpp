@@ -3,7 +3,7 @@
 //
 
 #include <fstream>
-#include <nalu.h>
+#include <nalu_header.h>
 #include <bitutil.h>
 #include <string.h>
 int read_one_sodb(unsigned char *nalu, unsigned long &nalu_size) {

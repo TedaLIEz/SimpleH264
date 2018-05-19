@@ -4,10 +4,8 @@
 
 #ifndef SIMPLEH264_NALU_PARSER_H
 #define SIMPLEH264_NALU_PARSER_H
-#include <nalu.h>
+#include <nalu_header.h>
 #include <fstream>
-#define NAL_HEADER_SHORT 0x000001
-#define NAL_HEADER_LONG 0x00000001
 /**
  * parse the nalu to sodb, where 0x000000, 0x000001, 0x000002 and 0x000003 turns to be 0x00000300,
  * 0x00000301, 0x00000302 and 0x00000303 respectively.
