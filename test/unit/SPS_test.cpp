@@ -69,125 +69,134 @@ class SpsTestCase : public ::testing::Test {
 
 Sps SpsTestCase::sps;
 
-TEST_F(SpsTestCase, SPS1_Profile_idc) {
+TEST_F(SpsTestCase, SPS_Profile_idc) {
   EXPECT_EQ(sps.profile_idc, 0x64);
 }
 
-TEST_F(SpsTestCase, SPS1_Level_idc) {
+TEST_F(SpsTestCase, SPS_constraint_set_flag) {
+  EXPECT_EQ(sps.cons_set0_flag, 0);
+  EXPECT_EQ(sps.cons_set1_flag, 0);
+  EXPECT_EQ(sps.cons_set2_flag, 0);
+  EXPECT_EQ(sps.cons_set3_flag, 0);
+  EXPECT_EQ(sps.cons_set4_flag, 0);
+  EXPECT_EQ(sps.cons_set5_flag, 0);
+}
+
+TEST_F(SpsTestCase, SPS_Level_idc) {
   EXPECT_EQ(sps.level_idc, 0x29);
 }
 
-TEST_F(SpsTestCase, SPS1_Seq_param_set_id) {
+TEST_F(SpsTestCase, SPS_Seq_param_set_id) {
   EXPECT_EQ(sps.seq_parameter_set_id, 0);
 }
 
-TEST_F(SpsTestCase, SPS1_Chroma_format_idc) {
+TEST_F(SpsTestCase, SPS_Chroma_format_idc) {
   EXPECT_EQ(sps.chroma_format_idc, 1);
 }
 
-TEST_F(SpsTestCase, SPS1_Separate_colour_plane_flag) {
+TEST_F(SpsTestCase, SPS_Separate_colour_plane_flag) {
   EXPECT_EQ(sps.separate_colour_plane_flag, -1);
 }
 
-TEST_F(SpsTestCase, SPS1_Depth_luma) {
+TEST_F(SpsTestCase, SPS_Depth_luma) {
   EXPECT_EQ(sps.bit_depth_luma_minus8, 0);
 }
 
-TEST_F(SpsTestCase, SPS1_Depth_chroma) {
+TEST_F(SpsTestCase, SPS_Depth_chroma) {
   EXPECT_EQ(sps.bit_depth_chroma_minus8, 0);
 }
 
-TEST_F(SpsTestCase, SPS1_Qpprime_y_zero_transform_bypass_flag) {
+TEST_F(SpsTestCase, SPS_Qpprime_y_zero_transform_bypass_flag) {
   EXPECT_EQ(sps.qpprime_y_zero_transform_bypass_flag, false);
 }
 
-TEST_F(SpsTestCase, SPS1_Seq_scaling_matrix_present_flag) {
+TEST_F(SpsTestCase, SPS_Seq_scaling_matrix_present_flag) {
   EXPECT_EQ(sps.seq_scaling_matrix_present_flag, 0);
 }
 
-TEST_F(SpsTestCase, SPS1_Scaling_list_size_Test) {
+TEST_F(SpsTestCase, SPS_Scaling_list_size_Test) {
   EXPECT_EQ(sps.seq_scaling_list_present_flag.size(), 0);
 }
 
 
-TEST_F(SpsTestCase, SPS1_Log2_max_frame_num_minus4) {
+TEST_F(SpsTestCase, SPS_Log2_max_frame_num_minus4) {
   EXPECT_EQ(sps.log2_max_frame_num_minus4, 0);
 }
 
-TEST_F(SpsTestCase, SPS1_Pic_order_cnt_type) {
+TEST_F(SpsTestCase, SPS_Pic_order_cnt_type) {
   EXPECT_EQ(sps.pic_order_cnt_type, 0);
 }
 
-TEST_F(SpsTestCase, SPS1_log2_max_pic_order_cnt_lsb_minus4) {
+TEST_F(SpsTestCase, SPS_log2_max_pic_order_cnt_lsb_minus4) {
   EXPECT_EQ(sps.log2_max_pic_order_cnt_lsb_minus4, 3);
 }
 
-TEST_F(SpsTestCase, SPS1_delta_pic_order_always_zero_flag) {
+TEST_F(SpsTestCase, SPS_delta_pic_order_always_zero_flag) {
   EXPECT_EQ(sps.delta_pic_order_always_zero_flag, false);
 }
 
-TEST_F(SpsTestCase, SPS1_offset_for_non_ref_pic) {
+TEST_F(SpsTestCase, SPS_offset_for_non_ref_pic) {
   EXPECT_EQ(sps.offset_for_non_ref_pic, -1);
 }
 
-TEST_F(SpsTestCase, SPS1_offset_for_top_to_bottom_field) {
+TEST_F(SpsTestCase, SPS_offset_for_top_to_bottom_field) {
   EXPECT_EQ(sps.offset_for_top_to_bottom_field, -1);
 }
 
-TEST_F(SpsTestCase, SPS1_num_ref_frames_in_pic_order_cnt_cycle) {
+TEST_F(SpsTestCase, SPS_num_ref_frames_in_pic_order_cnt_cycle) {
   EXPECT_EQ(sps.num_ref_frames_in_pic_order_cnt_cycle, -1);
 }
 
 
-TEST_F(SpsTestCase, SPS1_max_num_ref_frames) {
+TEST_F(SpsTestCase, SPS_max_num_ref_frames) {
   EXPECT_EQ(sps.max_num_ref_frames, 4);
 }
 
 
 
-TEST_F(SpsTestCase, SPS1_gaps_in_frame_num_value_allowed_flag) {
+TEST_F(SpsTestCase, SPS_gaps_in_frame_num_value_allowed_flag) {
   EXPECT_EQ(sps.gaps_in_frame_num_value_allowed_flag, 0);
 }
 
-TEST_F(SpsTestCase, SPS1_pic_width_in_mbs_minus1) {
+TEST_F(SpsTestCase, SPS_pic_width_in_mbs_minus1) {
   EXPECT_EQ(sps.pic_width_in_mbs_minus1, 119);
 }
 
-TEST_F(SpsTestCase, SPS1_pic_height_in_map_units_minus1) {
+TEST_F(SpsTestCase, SPS_pic_height_in_map_units_minus1) {
   EXPECT_EQ(sps.pic_height_in_map_units_minus1, 67);
 }
 
-TEST_F(SpsTestCase, SPS1_frame_mbs_only_flag) {
+TEST_F(SpsTestCase, SPS_frame_mbs_only_flag) {
   EXPECT_EQ(sps.frame_mbs_only_flag, 1);
 }
 
-TEST_F(SpsTestCase, SPS1_direct_8x8_inference_flag) {
+TEST_F(SpsTestCase, SPS_direct_8x8_inference_flag) {
   EXPECT_EQ(sps.direct_8x8_inference_flag, 1);
 }
 
-TEST_F(SpsTestCase, SPS1_frame_cropping_flag) {
+TEST_F(SpsTestCase, SPS_frame_cropping_flag) {
   EXPECT_EQ(sps.frame_cropping_flag, 1);
 }
 
-TEST_F(SpsTestCase, SPS1_frame_crop_left_offset) {
+TEST_F(SpsTestCase, SPS_frame_crop_left_offset) {
   EXPECT_EQ(sps.frame_crop_left_offset, 0);
 }
 
 
-TEST_F(SpsTestCase, SPS1_frame_crop_right_offset) {
+TEST_F(SpsTestCase, SPS_frame_crop_right_offset) {
   EXPECT_EQ(sps.frame_crop_right_offset, 0);
 }
 
-TEST_F(SpsTestCase, SPS1_frame_crop_top_offset) {
+TEST_F(SpsTestCase, SPS_frame_crop_top_offset) {
   EXPECT_EQ(sps.frame_crop_top_offset, 0);
 }
 
-TEST_F(SpsTestCase, SPS1_frame_crop_bottom_offset) {
+TEST_F(SpsTestCase, SPS_frame_crop_bottom_offset) {
   EXPECT_EQ(sps.frame_crop_bottom_offset, 4);
 }
 
 
-TEST_F(SpsTestCase, SPS1_vui_parameters_present_flag) {
+TEST_F(SpsTestCase, SPS_vui_parameters_present_flag) {
   EXPECT_EQ(sps.vui_parameters_present_flag, 1);
 }
 
