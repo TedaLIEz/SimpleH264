@@ -3,7 +3,7 @@
 //
 #include "vui_parser.h"
 #include "nalu_header.h"
-VUI VUI_parser::parse(unsigned char *data, unsigned long len, unsigned long& offset) {
+VUI VUI_Parser::parse(unsigned char *data, unsigned long len, unsigned long& offset) {
   VUI vui{};
 //  unsigned long offset = 0;
   vui.aspect_ratio_info_present_flag = static_cast<bool>(bit::get_bit(data, offset));
@@ -92,7 +92,7 @@ VUI VUI_parser::parse(unsigned char *data, unsigned long len, unsigned long& off
   return vui;
 }
 
-int VUI_parser::getType() {
+int VUI_Parser::getType() {
   // TODO: assign proper type
   return 0;
 }

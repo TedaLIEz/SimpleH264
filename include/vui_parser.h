@@ -7,7 +7,7 @@
 #include "parser.h"
 #include "vui.h"
 #define Extended_SAR 255
-class VUI_parser : public Parser<VUI> {
+class VUI_Parser : public Parser<VUI> {
  public:
   VUI parse(unsigned char* data, unsigned long len, unsigned long& offset) override ;
   int getType() override ;

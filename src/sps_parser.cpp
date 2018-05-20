@@ -5,7 +5,8 @@
 #include <sstream>
 #include "debug.h"
 #include "sps_parser.h"
-Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long& offset) {
+#include "vui_parser.h"
+Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &offset) {
   Sps sps;
 //  unsigned long offset = 0;
   auto profile_idc = bit::read_bytes(data, len, offset);
@@ -48,7 +49,6 @@ Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long& off
              "Invalid separate_colour_plane_flag");
       offset += 1;
     }
-
 
     sps.bit_depth_luma_minus8 = uev_decode(data, offset, "bit_depth_luma_minus8");
     sps.bit_depth_chroma_minus8 = uev_decode(data, offset, "bit_depth_chroma_minus8");
@@ -141,18 +141,28 @@ Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long& off
 
   sps.vui_parameters_present_flag = static_cast<bool>(bit::get_bit(data, offset));
   offset += 1;
-  // TODO: vui param
-      if (sps.vui_parameters_present_flag) {
-
-      }
+  if (sps.vui_parameters_present_flag) {
+    auto vui_parser = new VUI_Parser();
+    sps.vui = vui_parser->parse(data, len, offset);
+    delete vui_parser;
+  }
+  if (offset < len * 8) {
+    auto trailing_bit = bit::get_bit(data, offset);
+    ASSERT(trailing_bit == 1, "Fail to check the trailing bit");
+    offset += 1;
+#ifdef DEBUG
+    std::cout << "trailing bit in sps, length= " << (len * 8 - offset) << std::endl;
+#endif
+    offset = len;
+  }
   return sps;
 }
 
 void Sps_Parser::scaling_list(unsigned char *data,
-                             unsigned long &offset,
-                             int &scalingList,
-                             int sizeOfScalingList,
-                             bool &useDefaultScalingMatrixFlag) {
+                              unsigned long &offset,
+                              int &scalingList,
+                              int sizeOfScalingList,
+                              bool &useDefaultScalingMatrixFlag) {
   int lastScale = 8;
   int nextScale = 8;
   int delta_scale;

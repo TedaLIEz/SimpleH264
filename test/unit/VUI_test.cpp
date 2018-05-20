@@ -11,7 +11,7 @@ class VuiTestCase : public ::testing::Test {
   static VUI vui;
 
   static void SetUpTestCase() {
-    auto vuiParser = new VUI_parser();
+    auto vuiParser = new VUI_Parser();
     // vui starts at 704 / 8 = 88
     // 1 + 8 + 1 + 1 + 3 + 1 + 1 + 1 =
     unsigned char mock_data[28] =
@@ -41,8 +41,8 @@ class VuiTestCase : public ::testing::Test {
          0x04,
          0x78,
          0xc1,
-         0x8c,
-         0xb0};
+         0x8c,   // 0b10001100
+         0xb0};  // 0b10110000
     unsigned long offset = 83;
     vui = vuiParser->parse(mock_data, 28, offset);
     delete vuiParser;
