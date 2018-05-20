@@ -5,9 +5,9 @@
 #include <sstream>
 #include "debug.h"
 #include "sps_parser.h"
-Sps SpsParser::parse(unsigned char *data, unsigned long len) {
+Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long& offset) {
   Sps sps;
-  unsigned long offset = 0;
+//  unsigned long offset = 0;
   auto profile_idc = bit::read_bytes(data, len, offset);
   sps.profile_idc = profile_idc;
   offset += 8;
@@ -48,11 +48,7 @@ Sps SpsParser::parse(unsigned char *data, unsigned long len) {
              "Invalid separate_colour_plane_flag");
       offset += 1;
     }
-    unsigned long scaling_list_flag_len = 12;
-    if (sps.chroma_format_idc != 3) {
-      scaling_list_flag_len = 8;
-    }
-    sps.seq_scaling_list_present_flag.resize(scaling_list_flag_len);
+
 
     sps.bit_depth_luma_minus8 = uev_decode(data, offset, "bit_depth_luma_minus8");
     sps.bit_depth_chroma_minus8 = uev_decode(data, offset, "bit_depth_chroma_minus8");
@@ -61,6 +57,11 @@ Sps SpsParser::parse(unsigned char *data, unsigned long len) {
     sps.seq_scaling_matrix_present_flag = static_cast<bool>(bit::get_bit(data, offset));
     offset += 1;
     if (sps.seq_scaling_matrix_present_flag) {
+      unsigned long scaling_list_flag_len = 12;
+      if (sps.chroma_format_idc != 3) {
+        scaling_list_flag_len = 8;
+      }
+      sps.seq_scaling_list_present_flag.resize(scaling_list_flag_len);
       for (int i = 0; i < scaling_list_flag_len; i++) {
         sps.seq_scaling_list_present_flag[i] = static_cast<bool>(bit::get_bit(data, offset));
         offset += 1;
@@ -141,10 +142,13 @@ Sps SpsParser::parse(unsigned char *data, unsigned long len) {
   sps.vui_parameters_present_flag = static_cast<bool>(bit::get_bit(data, offset));
   offset += 1;
   // TODO: vui param
+      if (sps.vui_parameters_present_flag) {
+
+      }
   return sps;
 }
 
-void SpsParser::scaling_list(unsigned char *data,
+void Sps_Parser::scaling_list(unsigned char *data,
                              unsigned long &offset,
                              int &scalingList,
                              int sizeOfScalingList,
@@ -169,8 +173,8 @@ void SpsParser::scaling_list(unsigned char *data,
 
 }
 
-int SpsParser::getType() {
+int Sps_Parser::getType() {
   return id;
 }
 
-SpsParser::~SpsParser() = default;
+Sps_Parser::~Sps_Parser() = default;

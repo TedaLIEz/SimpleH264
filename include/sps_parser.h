@@ -10,7 +10,7 @@
 #ifdef _TEST
 #include <gtest/gtest_prod.h>
 #endif
-class SpsParser : public Parser<Sps> {
+class Sps_Parser : public Parser<Sps> {
  private:
   const int id = 7;
 
@@ -25,12 +25,12 @@ class SpsParser : public Parser<Sps> {
                    int sizeOfScalingList,
                    bool &useDefaultScalingMatrixFlag);
  public:
-  SpsParser() : Parser() {}
-  Sps parse(unsigned char *data, unsigned long len) override;
+  Sps_Parser() : Parser() {}
+  Sps parse(unsigned char *data, unsigned long len, unsigned long& offset) override;
 
 
   int getType() override;
 
-  ~SpsParser() override;
+  ~Sps_Parser() override;
 };
 #endif //SIMPLEH264_SPS_PARSER_H

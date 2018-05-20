@@ -4,13 +4,14 @@
 
 #ifndef SIMPLEH264_PARSER_H
 #define SIMPLEH264_PARSER_H
+#include <sstream>
 #include "sps.h"
 #include "golomb.h"
 template <class T>
 class Parser {
  public:
   Parser() = default;
-  virtual T parse(unsigned char* data, unsigned long len) = 0;
+  virtual T parse(unsigned char* data, unsigned long len, unsigned long& offset) = 0;
   virtual int getType() = 0;
   virtual ~Parser() = default;
   int uev_decode(unsigned char* data, unsigned long& offset, const std::string& name) {

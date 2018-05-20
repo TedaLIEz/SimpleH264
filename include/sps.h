@@ -5,6 +5,7 @@
 #ifndef SIMPLEH264_SPS_H
 #define SIMPLEH264_SPS_H
 #include "debug.h"
+#include "vui.h"
 #include <vector>
 class Sps {
  public:
@@ -33,10 +34,10 @@ class Sps {
 
   int log2_max_pic_order_cnt_lsb_minus4 = -1;
 
-  bool delta_pic_order_always_zero_flag;
-  int offset_for_non_ref_pic;
-  int offset_for_top_to_bottom_field;
-  int num_ref_frames_in_pic_order_cnt_cycle;
+  bool delta_pic_order_always_zero_flag = false;
+  int offset_for_non_ref_pic = -1;
+  int offset_for_top_to_bottom_field = -1;
+  int num_ref_frames_in_pic_order_cnt_cycle = -1;
   std::vector<int> offset_for_ref_frame;
 
   int max_num_ref_frames;
@@ -55,5 +56,6 @@ class Sps {
   int frame_crop_top_offset;
   int frame_crop_bottom_offset;
   bool vui_parameters_present_flag;
+  VUI vui;
 };
 #endif //SIMPLEH264_SPS_H
