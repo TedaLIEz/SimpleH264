@@ -12,18 +12,32 @@ class HrdTestCase : public ::testing::Test {
   static void SetUpTestCase() {
     auto hrdParser = new HRD_Parser();
     // vui starts at 704 / 8 = 88
-    unsigned char mock_data[114] =
-        {0x64, 0x00, 0x28, 0xAD, /* 0b 1 010 1 1 0 1 */0x84, 0x05, 0x45, 0x62, 0xB8, 0xAC, 0x54, 0x74, 0x20, 0x2A,
-         0x2B, 0x15, 0xC5, 0x62, 0xA3, 0xA1, 0x01, 0x51, 0x58, 0xAE, 0x2B, 0x15, 0x1D, 0x08,
-         0x0A, 0x8A, 0xC5, 0x71, 0x58, 0xA8, 0xE8, 0x40, 0x54, 0x56, 0x2B, 0x8A, 0xC5, 0x47,
-         0x42, 0x02, 0xA2, 0xB1, 0x5C, 0x56, 0x2A, 0x3A, 0x10, 0x24, 0x85, 0x21, 0x39, 0x3C,
-         0x9F, 0x27, 0xE4, 0xFE, 0x4F, 0xC9, 0xF2, 0x79, 0xB9, 0xB3, 0x4D, 0x08, 0x12, 0x42,
-         0x90, 0x9C, 0x9E, 0x4F, 0x93, 0xF2, 0x7F, 0x27, 0xE4, 0xF9, 0x3C, 0xDC, 0xD9, 0xA6,
-         0xB4, 0x05, 0x01, 0xED, 0x80, 0xAA, 0x40, 0x00, 0x00, 0x03, 0x00, 0x40, 0x00, 0x00,
-         0x25, 0x98, 0x10, 0x00, 0xFA, 0x00, 0x00, 0x46, 0x51, 0xBD, 0xEF, 0x85, 0xE1, 0x10,
-         0x8D, 0x40};
-    unsigned long offset = 0;
-    hrd = hrdParser->parse(mock_data, 114, offset);
+    unsigned char mock_data[23] =
+        {0x42,
+         0xe0,
+         0x15,
+         0xa9,
+         0x18,
+         0x3c,
+         0x11,
+         0xfd,
+         0x60,
+         0x2d,
+         0x41,
+         0x80,
+         0x41,
+         0xad,
+         0xb7,
+         0xa0,
+         0x0f,
+         0x48,
+         0x0f,
+         0x55,
+         0xef,
+         0x7c,
+         0x04};    // 0b 10100000
+    unsigned long offset = 115;
+    hrd = hrdParser->parse(mock_data, 23, offset);
     delete hrdParser;
   }
 
@@ -46,42 +60,45 @@ class HrdTestCase : public ::testing::Test {
 HRD HrdTestCase::hrd;
 
 TEST_F(HrdTestCase, HRD_cpb_cnt_minus1) {
-
+  EXPECT_EQ(hrd.cpb_cnt_minus1, 0);
 }
 
 TEST_F(HrdTestCase, HRD_bit_rate_scale) {
-
+  EXPECT_EQ(hrd.bit_rate_scale, 7);
 }
 
 TEST_F(HrdTestCase, HRD_cpb_size_scale) {
-
+  EXPECT_EQ(hrd.cpb_size_scale, 10);
 }
 
 TEST_F(HrdTestCase, HRD_bit_rate_value_minus1) {
-
+  EXPECT_EQ(hrd.bit_rate_value_minus1.size(), 1);
+  EXPECT_THAT(hrd.bit_rate_value_minus1, ::testing::ElementsAre(488));
 }
 
 TEST_F(HrdTestCase, HRD_cpb_size_value_minus1) {
-
+  EXPECT_EQ(hrd.cpb_size_value_minus1.size(), 1);
+  EXPECT_THAT(hrd.cpb_size_value_minus1, ::testing::ElementsAre(244));
 }
 
 TEST_F(HrdTestCase, HRD_cbr_flag) {
-
+  EXPECT_EQ(hrd.cbr_flag.size(), 1);
+  EXPECT_THAT(hrd.cbr_flag, ::testing::ElementsAre(false));
 }
 
 TEST_F(HrdTestCase, HRD_initial_cpb_removal_delay_length_minus1) {
-
+  EXPECT_EQ(hrd.initial_cpb_removal_delay_length_minus1, 23);
 }
 
 TEST_F(HrdTestCase, HRD_cpb_removal_delay_length_minus1) {
-
+  EXPECT_EQ(hrd.cpb_removal_delay_length_minus1, 23);
 }
 
 TEST_F(HrdTestCase, HRD_dpb_output_delay_length_minus1) {
-
+  EXPECT_EQ(hrd.dpb_output_delay_length_minus1, 23);
 }
 
 TEST_F(HrdTestCase, HRD_time_offset_length) {
-
+  EXPECT_EQ(hrd.time_offset_length, 24);
 }
 

@@ -1,6 +1,7 @@
 //
 // Created by aLIEzTed on 5/19/18.
 //
+#include <hrd_parser.h>
 #include "vui_parser.h"
 #include "nalu_header.h"
 VUI VUI_Parser::parse(unsigned char *data, unsigned long len, unsigned long& offset) {
@@ -63,12 +64,16 @@ VUI VUI_Parser::parse(unsigned char *data, unsigned long len, unsigned long& off
   vui.nal_hrd_parameters_present_flag = static_cast<bool>(bit::get_bit(data, offset));
   offset += 1;
   if (vui.nal_hrd_parameters_present_flag) {
-    // TODO: parse hrd_param
+    auto hrd_parser = new HRD_Parser();
+    vui.nal_hrd_param = hrd_parser->parse(data, len, offset);
+    delete hrd_parser;
   }
   vui.vcl_hrd_parameters_present_flag = static_cast<bool>(bit::get_bit(data, offset));
   offset += 1;
   if (vui.vcl_hrd_parameters_present_flag) {
-    // TODO: parse hrd_param
+    auto hrd_parser = new HRD_Parser();
+    vui.vcl_hrd_param = hrd_parser->parse(data, len, offset);
+    delete hrd_parser;
   }
 
   if (vui.nal_hrd_parameters_present_flag || vui.vcl_hrd_parameters_present_flag) {

@@ -10,7 +10,7 @@
 class SpsTestCase : public ::testing::Test {
  protected:
   // Some expensive resource shared by all tests.
-  static Sps sps, spsTest2;
+  static Sps sps, sps2;
   // Per-test-case set-up.
   // Called before the first test in this test case.
   // Can be omitted if not needed.
@@ -48,6 +48,33 @@ class SpsTestCase : public ::testing::Test {
     unsigned long offset = 0;
     sps = spsParser1->parse(mock_data1, 28, offset);
     ASSERT_EQ(offset, 28 * 8);
+    offset = 0;
+    unsigned char mock_data2[23] =
+        {0x42,
+         0xe0,
+         0x15,
+         0xa9,
+         0x18,
+         0x3c,
+         0x11,
+         0xfd,
+         0x60,
+         0x2d,
+         0x41,
+         0x80,
+         0x41,
+         0xad,
+         0xb7,
+         0xa0,
+         0x0f,
+         0x48,
+         0x0f,
+         0x55,
+         0xef,
+         0x7c,
+         0x04};    // 0b 10100000
+    sps2 = spsParser1->parse(mock_data2, 23, offset);
+//    ASSERT_EQ(offset, 23 * 8);
     delete spsParser1;
   }
 
@@ -68,6 +95,7 @@ class SpsTestCase : public ::testing::Test {
 };
 
 Sps SpsTestCase::sps;
+Sps SpsTestCase::sps2;
 
 TEST_F(SpsTestCase, SPS_Profile_idc) {
   EXPECT_EQ(sps.profile_idc, 0x64);
@@ -95,7 +123,7 @@ TEST_F(SpsTestCase, SPS_Chroma_format_idc) {
 }
 
 TEST_F(SpsTestCase, SPS_Separate_colour_plane_flag) {
-  EXPECT_EQ(sps.separate_colour_plane_flag, -1);
+  EXPECT_EQ(sps.separate_colour_plane_flag, false);
 }
 
 TEST_F(SpsTestCase, SPS_Depth_luma) {
@@ -136,15 +164,15 @@ TEST_F(SpsTestCase, SPS_delta_pic_order_always_zero_flag) {
 }
 
 TEST_F(SpsTestCase, SPS_offset_for_non_ref_pic) {
-  EXPECT_EQ(sps.offset_for_non_ref_pic, -1);
+  EXPECT_EQ(sps.offset_for_non_ref_pic, 0);
 }
 
 TEST_F(SpsTestCase, SPS_offset_for_top_to_bottom_field) {
-  EXPECT_EQ(sps.offset_for_top_to_bottom_field, -1);
+  EXPECT_EQ(sps.offset_for_top_to_bottom_field, 0);
 }
 
 TEST_F(SpsTestCase, SPS_num_ref_frames_in_pic_order_cnt_cycle) {
-  EXPECT_EQ(sps.num_ref_frames_in_pic_order_cnt_cycle, -1);
+  EXPECT_EQ(sps.num_ref_frames_in_pic_order_cnt_cycle, 0);
 }
 
 
@@ -198,6 +226,88 @@ TEST_F(SpsTestCase, SPS_frame_crop_bottom_offset) {
 
 TEST_F(SpsTestCase, SPS_vui_parameters_present_flag) {
   EXPECT_EQ(sps.vui_parameters_present_flag, 1);
+}
+
+
+TEST_F(SpsTestCase, SPS_with_vui_hrd) {
+  EXPECT_EQ(sps2.profile_idc, 66);
+  EXPECT_EQ(sps2.cons_set0_flag, 1);
+  EXPECT_EQ(sps2.cons_set1_flag, 1);
+  EXPECT_EQ(sps2.cons_set2_flag, 1);
+  EXPECT_EQ(sps2.cons_set3_flag, 0);
+  EXPECT_EQ(sps2.cons_set4_flag, 0);
+  EXPECT_EQ(sps2.cons_set5_flag, 0);
+  EXPECT_EQ(sps2.level_idc, 21);
+  EXPECT_EQ(sps2.seq_parameter_set_id, 0);
+  EXPECT_EQ(sps2.chroma_format_idc, 1);
+  EXPECT_EQ(sps2.separate_colour_plane_flag, 0);
+  EXPECT_EQ(sps2.bit_depth_luma_minus8, 0);
+  EXPECT_EQ(sps2.bit_depth_chroma_minus8, 0);
+  EXPECT_EQ(sps2.qpprime_y_zero_transform_bypass_flag, 0);
+  EXPECT_EQ(sps2.seq_scaling_matrix_present_flag, 0);
+  EXPECT_EQ(sps2.log2_max_frame_num_minus4, 1);
+  EXPECT_EQ(sps2.pic_order_cnt_type, 0);
+  EXPECT_EQ(sps2.log2_max_pic_order_cnt_lsb_minus4, 3);
+  EXPECT_EQ(sps2.offset_for_non_ref_pic, 0);
+  EXPECT_EQ(sps2.offset_for_top_to_bottom_field, 0);
+  EXPECT_EQ(sps2.num_ref_frames_in_pic_order_cnt_cycle ,0);
+  EXPECT_EQ(sps2.max_num_ref_frames ,2);
+  EXPECT_EQ(sps2.gaps_in_frame_num_value_allowed_flag ,0);
+  EXPECT_EQ(sps2.pic_width_in_mbs_minus1 ,29);
+  EXPECT_EQ(sps2.pic_height_in_map_units_minus1 ,16);
+  EXPECT_EQ(sps2.frame_mbs_only_flag ,1);
+  EXPECT_EQ(sps2.mb_adaptive_frame_field_flag ,0);
+  EXPECT_EQ(sps2.direct_8x8_inference_flag ,1);
+  EXPECT_EQ(sps2.frame_cropping_flag ,1);
+  EXPECT_EQ(sps2.frame_crop_left_offset ,0);
+  EXPECT_EQ(sps2.frame_crop_right_offset ,0);
+  EXPECT_EQ(sps2.frame_crop_top_offset ,0);
+  EXPECT_EQ(sps2.frame_crop_bottom_offset ,1);
+  EXPECT_EQ(sps2.vui_parameters_present_flag ,1);
+//  === VUI ===
+//      aspect_ratio_info_present_flag : 1
+//  aspect_ratio_idc : 1
+//  sar_width : 0
+//  sar_height : 0
+//  overscan_info_present_flag : 0
+//  overscan_appropriate_flag : 0
+//  video_signal_type_present_flag : 1
+//  video_format : 5
+//  video_full_range_flag : 0
+//  colour_description_present_flag : 1
+//  colour_primaries : 6
+//  transfer_characteristics : 1
+//  matrix_coefficients : 6
+//  chroma_loc_info_present_flag : 1
+//  chroma_sample_loc_type_top_field : 2
+//  chroma_sample_loc_type_bottom_field : 2
+//  timing_info_present_flag : 0
+//  num_units_in_tick : 0
+//  time_scale : 0
+//  fixed_frame_rate_flag : 0
+//  nal_hrd_parameters_present_flag : 1
+//  vcl_hrd_parameters_present_flag : 0
+//  low_delay_hrd_flag : 0
+//  pic_struct_present_flag : 0
+//  bitstream_restriction_flag : 0
+//  motion_vectors_over_pic_boundaries_flag : 0
+//  max_bytes_per_pic_denom : 0
+//  max_bits_per_mb_denom : 0
+//  log2_max_mv_length_horizontal : 0
+//  log2_max_mv_length_vertical : 0
+//  num_reorder_frames : 0
+//  max_dec_frame_buffering : 0
+//                                === HRD ===
+//                                cpb_cnt_minus1 : 0
+//  bit_rate_scale : 7
+//  cpb_size_scale : 10
+//  bit_rate_value_minus1[0] : 488
+//  cpb_size_value_minus1[0] : 244
+//  cbr_flag[0] : 0
+//  initial_cpb_removal_delay_length_minus1 : 23
+//  cpb_removal_delay_length_minus1 : 23
+//  dpb_output_delay_length_minus1 : 23
+//  time_offset_length : 24
 }
 
 TEST(SpsScalingListTest, SPS_Scaling_list) {

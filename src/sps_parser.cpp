@@ -44,9 +44,7 @@ Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
     std::cout << "profile_idc satisfied, find chroma_format_idc " << sps.chroma_format_idc << std::endl;
 #endif
     if (sps.chroma_format_idc == 3) {
-      sps.separate_colour_plane_flag = bit::get_bit(data, offset);
-      ASSERT(sps.separate_colour_plane_flag == 0 || sps.separate_colour_plane_flag == 1,
-             "Invalid separate_colour_plane_flag");
+      sps.separate_colour_plane_flag = static_cast<bool>(bit::get_bit(data, offset));
       offset += 1;
     }
 
@@ -153,7 +151,7 @@ Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
 #ifdef DEBUG
     std::cout << "trailing bit in sps, length= " << (len * 8 - offset) << std::endl;
 #endif
-    offset = len;
+    offset = len * 8;
   }
   return sps;
 }

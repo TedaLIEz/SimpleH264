@@ -9,19 +9,20 @@
 #include <vector>
 class Sps {
  public:
-  int profile_idc = -1;
+  int profile_idc;
   bool cons_set0_flag;
   bool cons_set1_flag;
   bool cons_set2_flag;
   bool cons_set3_flag;
   bool cons_set4_flag;
   bool cons_set5_flag;
-  int level_idc = -1;
-  int seq_parameter_set_id = -1;
-  int chroma_format_idc = -1;
-  int separate_colour_plane_flag = -1;
-  int bit_depth_luma_minus8 = -1;
-  int bit_depth_chroma_minus8 = -1;
+  int level_idc;
+  int seq_parameter_set_id;
+  // When chroma_format_idc is not present, it shall be inferred to be equal to 1 (4:2:0 chroma format).
+  int chroma_format_idc;
+  bool separate_colour_plane_flag;
+  int bit_depth_luma_minus8;
+  int bit_depth_chroma_minus8;
   bool qpprime_y_zero_transform_bypass_flag;
   bool seq_scaling_matrix_present_flag;
   std::vector<bool> seq_scaling_list_present_flag;
@@ -32,12 +33,12 @@ class Sps {
   int log2_max_frame_num_minus4;
   int pic_order_cnt_type;
 
-  int log2_max_pic_order_cnt_lsb_minus4 = -1;
+  int log2_max_pic_order_cnt_lsb_minus4;
 
-  bool delta_pic_order_always_zero_flag = false;
-  int offset_for_non_ref_pic = -1;
-  int offset_for_top_to_bottom_field = -1;
-  int num_ref_frames_in_pic_order_cnt_cycle = -1;
+  bool delta_pic_order_always_zero_flag;
+  int offset_for_non_ref_pic;
+  int offset_for_top_to_bottom_field;
+  int num_ref_frames_in_pic_order_cnt_cycle;
   std::vector<int> offset_for_ref_frame;
 
   int max_num_ref_frames;
@@ -57,5 +58,23 @@ class Sps {
   int frame_crop_bottom_offset;
   bool vui_parameters_present_flag;
   VUI vui;
+
+  explicit Sps()
+      : chroma_format_idc(1),
+        separate_colour_plane_flag(false),
+        bit_depth_luma_minus8(0),
+        bit_depth_chroma_minus8(0),
+        qpprime_y_zero_transform_bypass_flag(false),
+        seq_scaling_matrix_present_flag(false),
+        log2_max_pic_order_cnt_lsb_minus4(0),
+        delta_pic_order_always_zero_flag(false),
+        offset_for_non_ref_pic(0),
+        offset_for_top_to_bottom_field(0),
+        num_ref_frames_in_pic_order_cnt_cycle(0),
+        mb_adaptive_frame_field_flag(false),
+        frame_crop_left_offset(0),
+        frame_crop_right_offset(0),
+        frame_crop_top_offset(0),
+        frame_crop_bottom_offset(0) {}
 };
 #endif //SIMPLEH264_SPS_H

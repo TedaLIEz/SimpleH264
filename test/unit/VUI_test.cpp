@@ -8,7 +8,7 @@
 
 class VuiTestCase : public ::testing::Test {
  protected:
-  static VUI vui;
+  static VUI vui, vui1;
 
   static void SetUpTestCase() {
     auto vuiParser = new VUI_Parser();
@@ -45,6 +45,32 @@ class VuiTestCase : public ::testing::Test {
          0xb0};  // 0b10110000
     unsigned long offset = 83;
     vui = vuiParser->parse(mock_data, 28, offset);
+    offset = 66;
+    unsigned char mock_data1[23] =
+        {0x42,
+         0xe0,
+         0x15,
+         0xa9,
+         0x18,
+         0x3c,
+         0x11,
+         0xfd,
+         0x60,
+         0x2d,
+         0x41,
+         0x80,
+         0x41,
+         0xad,
+         0xb7,
+         0xa0,
+         0x0f,
+         0x48,
+         0x0f,
+         0x55,
+         0xef,
+         0x7c,
+         0x04};    // 0b 10100000
+    vui1 = vuiParser->parse(mock_data1, 23, offset);
     delete vuiParser;
   }
 
@@ -65,6 +91,7 @@ class VuiTestCase : public ::testing::Test {
 };
 
 VUI VuiTestCase::vui;
+VUI VuiTestCase::vui1;
 
 TEST_F(VuiTestCase, VUI_aspect_ratio_info_present_flag) {
   EXPECT_EQ(vui.aspect_ratio_info_present_flag, 1);
@@ -130,7 +157,6 @@ TEST_F(VuiTestCase, VUI_nal_hrd_parameters_present_flag) {
   EXPECT_EQ(vui.nal_hrd_parameters_present_flag, 0);
 }
 
-
 TEST_F(VuiTestCase, VUI_vcl_hrd_parameters_present_flag) {
   EXPECT_EQ(vui.vcl_hrd_parameters_present_flag, false);
 }
@@ -167,3 +193,41 @@ TEST_F(VuiTestCase, VUI_max_dec_frame_buffering) {
   EXPECT_EQ(vui.max_dec_frame_buffering, 4);
 }
 
+
+
+TEST_F(VuiTestCase, VUI_test_with_hrd) {
+  EXPECT_EQ(vui1.aspect_ratio_info_present_flag,1);
+  EXPECT_EQ(vui1.aspect_ratio_idc,1);
+  EXPECT_EQ(vui1.sar_width,0);
+  EXPECT_EQ(vui1.sar_height,0);
+  EXPECT_EQ(vui1.overscan_info_present_flag,0);
+  EXPECT_EQ(vui1.overscan_appropriate_flag,0);
+  EXPECT_EQ(vui1.video_signal_type_present_flag,1);
+  EXPECT_EQ(vui1.video_format,5);
+  EXPECT_EQ(vui1.video_full_range_flag,0);
+  EXPECT_EQ(vui1.colour_description_present_flag,1);
+  EXPECT_EQ(vui1.colour_primaries,6);
+  EXPECT_EQ(vui1.transfer_characteristics,1);
+  EXPECT_EQ(vui1.matrix_coefficients,6);
+  EXPECT_EQ(vui1.chroma_loc_info_present_flag,1);
+  EXPECT_EQ(vui1.chroma_sample_loc_type_top_field,2);
+  EXPECT_EQ(vui1.chroma_sample_loc_type_bottom_field,2);
+  EXPECT_EQ(vui1.timing_info_present_flag,0);
+  EXPECT_EQ(vui1.num_units_in_tick,0);
+  EXPECT_EQ(vui1.time_scale,0);
+  EXPECT_EQ(vui1.fixed_frame_rate_flag,0);
+  EXPECT_EQ(vui1.nal_hrd_parameters_present_flag,1);
+  EXPECT_EQ(vui1.vcl_hrd_parameters_present_flag,0);
+  EXPECT_EQ(vui1.low_delay_hrd_flag,0);
+  EXPECT_EQ(vui1.pic_struct_present_flag,0);
+  EXPECT_EQ(vui1.bitstream_restriction_flag,0);
+  EXPECT_EQ(vui1.motion_vectors_over_pic_boundaries_flag,0);
+  EXPECT_EQ(vui1.max_bytes_per_pic_denom,0);
+  EXPECT_EQ(vui1.max_bits_per_mb_denom,0);
+  EXPECT_EQ(vui1.log2_max_mv_length_horizontal,0);
+  EXPECT_EQ(vui1.log2_max_mv_length_vertical,0);
+  EXPECT_EQ(vui1.max_num_reorder_frames,0);
+  EXPECT_EQ(vui1.max_dec_frame_buffering,0);
+
+  // ---- HRD ----
+}

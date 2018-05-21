@@ -17,6 +17,7 @@ HRD HRD_Parser::parse(unsigned char *data, unsigned long len, unsigned long& off
     hrd.cpb_size_value_minus1.push_back(uev_decode(data, offset, "cpb_size_value_minus1"));
     auto cbr_flag = static_cast<bool>(bit::get_bit(data, offset));
     hrd.cbr_flag.push_back(cbr_flag);
+    offset += 1;
   }
 
   hrd.initial_cpb_removal_delay_length_minus1 = bit::next_bit(data, len, 5, offset);
