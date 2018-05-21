@@ -23,41 +23,32 @@ void test_nalu() {
   unsigned long offset = 0;
   auto parser = new NAL_Parser();
   if (read_one_nalu(file, offset, data, size)) {
-    std::cout << "read data length in bytes " << size << std::endl;
-    read_one_sodb(data, size);
-    for (int i = 0; i < size; i++) {
-      PRINT_HEX((unsigned int)*(data + i));
-    }
-    std::cout << "sodb length in bytes " << size << std::endl;
     unsigned long nalu_offset = 0;
     auto nalu = parser->parse(data, size, nalu_offset);
-    std::cout << "header " << nalu << std::endl;
+    std::cout << "nalu size : " << nalu.size << nalu << std::endl;
+    for (int i = 0; i < nalu.size; i++) {
+      PRINT_HEX((unsigned int)*(nalu.data + i));
+    }
   }
   offset += size;
   offset += 4;
   if (read_one_nalu(file, offset, data, size)) {
-    std::cout << "read another data length in bytes " << size << std::endl;
-    read_one_sodb(data, size);
-    for (int i = 0; i < size; i++) {
-      PRINT_HEX((unsigned int)*(data + i));
-    }
-    std::cout << "sodb length in bytes " << size << std::endl;
     unsigned long nalu_offset = 0;
     auto nalu = parser->parse(data, size, nalu_offset);
-    std::cout << "header " << nalu << std::endl;
+    std::cout << "nalu size : " << nalu.size << nalu << std::endl;
+    for (int i = 0; i < nalu.size; i++) {
+      PRINT_HEX((unsigned int)*(nalu.data + i));
+    }
   }
   offset += size;
   offset += 3;
   if (read_one_nalu(file, offset, data, size)) {
-    std::cout << "read another data length in bytes " << size << std::endl;
-    read_one_sodb(data, size);
-    for (int i = 0; i < size; i++) {
-      PRINT_HEX((unsigned int)*(data + i));
-    }
-    std::cout << "sodb length in bytes " << size << std::endl;
     unsigned long nalu_offset = 0;
     auto nalu = parser->parse(data, size, nalu_offset);
-    std::cout << "header " << nalu << std::endl;
+    std::cout << "nalu size : " << nalu.size << nalu << std::endl;
+    for (int i = 0; i < nalu.size; i++) {
+      PRINT_HEX((unsigned int)*(nalu.data + i));
+    }
   }
   delete parser;
 }

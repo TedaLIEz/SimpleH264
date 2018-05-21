@@ -17,9 +17,12 @@ class NAL_Parser : public Parser<NALU> {
  private:
 #ifdef _TEST
   FRIEND_TEST(NAL_Parse_Header_Test, ParseHeader_Test);
+  FRIEND_TEST(NAL_SODB_Test, SODB_Single_Test);
+  FRIEND_TEST(NAL_SODB_Test, SODB_Multiple_Test);
 #endif
 
   NALU_header parse_header(unsigned char* data, unsigned long& offset);
+  int sodb(unsigned char* nalu, unsigned long& size);
 };
 
 /**

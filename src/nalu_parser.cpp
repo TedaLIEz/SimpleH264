@@ -10,9 +10,12 @@
 
 NALU NAL_Parser::parse(unsigned char *data, unsigned long len, unsigned long &offset) {
   NALU nalu{};
+  auto rst = sodb(data, len);
+  ASSERT(!rst, "Fail to convert nalu data to sodb");
+  offset = len * 8;
   nalu.header = parse_header(data, offset);
   nalu.data = data;
-  nalu.size = len - 1;
+  nalu.size = len;
   return nalu;
 }
 
@@ -23,19 +26,15 @@ NALU_header NAL_Parser::parse_header(unsigned char *data, unsigned long& offset)
   return header;
 }
 
-int NAL_Parser::getType() {
-  return 0;
-}
-
-int read_one_sodb(unsigned char *nalu, unsigned long &nalu_size) {
-  if (bit::next_bit(nalu, nalu_size, 1, 0) != 0) {
+int NAL_Parser::sodb(unsigned char *nalu, unsigned long &size) {
+  if (bit::next_bit(nalu, size, 1, 0) != 0) {
     return -1;
   }
   int index = 0;
-  while (index < nalu_size * 8 - 16) {
-    auto bits = bit::next_bit(nalu, nalu_size, 16, index);
+  while (index < size * 8 - 16) {
+    auto bits = bit::next_bit(nalu, size, 16, index);
     if (bits == 0x0000) {
-      bits = bit::next_bit(nalu, nalu_size, 16, index + 16);
+      bits = bit::next_bit(nalu, size, 16, index + 16);
       if (bits == 0x0300 || bits == 0x0301 || bits == 0x0302 || bits == 0x0303) {
 #ifdef DEBUG
         std::cout << "find a emulation prevention bytes at " << index << std::endl;
@@ -43,14 +42,18 @@ int read_one_sodb(unsigned char *nalu, unsigned long &nalu_size) {
         auto start_bytes = (index + 16) / 8;
         // don't use memcpy here, as if the objects overlap, the behavior is undefined
         // ref: http://en.cppreference.com/w/c/string/byte/memcpy
-        memmove(nalu + start_bytes, nalu + start_bytes + 1, nalu_size - start_bytes - 1);
-        nalu_size -= 1;
+        memmove(nalu + start_bytes, nalu + start_bytes + 1, size - start_bytes - 1);
+        size -= 1;
         index += 24;
         continue;
       }
     }
     index += 4;
   }
+  return 0;
+}
+
+int NAL_Parser::getType() {
   return 0;
 }
 
