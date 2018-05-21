@@ -22,8 +22,6 @@ class NAL_Parser : public Parser<NALU> {
 #endif
 
   NALU_header parse_header(unsigned char* data, unsigned long& offset);
-  int sodb(unsigned char* nalu, unsigned long& size);
-};
 
 /**
  * parse the nalu to sodb, where 0x000000, 0x000001, 0x000002 and 0x000003 turns to be 0x00000300,
@@ -32,8 +30,8 @@ class NAL_Parser : public Parser<NALU> {
  * @param nalu_size the length of nalu in bytes, change to length of sodb after parsing
  * @return 0 parsing successfully
  */
-int read_one_sodb(unsigned char* nalu, unsigned long& nalu_size);
-int read_one_nalu(std::ifstream& file, unsigned long start, unsigned char*& nalu, unsigned long& nalu_size);
+  int sodb(unsigned char* nalu, unsigned long& size);
+};
 
 
 #endif //SIMPLEH264_NALU_PARSER_H
