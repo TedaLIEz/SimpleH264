@@ -33,6 +33,10 @@ class Parser {
     offset += len;
     return rst;
   }
+  
+  bool get_bool(unsigned char* data, unsigned long& offset) {
+    return static_cast<bool>(bit::get_bit(data, offset++));
+  }
 };
 
 

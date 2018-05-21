@@ -44,16 +44,13 @@ Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
     std::cout << "profile_idc satisfied, find chroma_format_idc " << sps.chroma_format_idc << std::endl;
 #endif
     if (sps.chroma_format_idc == 3) {
-      sps.separate_colour_plane_flag = static_cast<bool>(bit::get_bit(data, offset));
-      offset += 1;
+      sps.separate_colour_plane_flag = get_bool(data, offset);
     }
 
     sps.bit_depth_luma_minus8 = uev_decode(data, offset, "bit_depth_luma_minus8");
     sps.bit_depth_chroma_minus8 = uev_decode(data, offset, "bit_depth_chroma_minus8");
-    sps.qpprime_y_zero_transform_bypass_flag = static_cast<bool>(bit::get_bit(data, offset));
-    offset += 1;
-    sps.seq_scaling_matrix_present_flag = static_cast<bool>(bit::get_bit(data, offset));
-    offset += 1;
+    sps.qpprime_y_zero_transform_bypass_flag = get_bool(data, offset);
+    sps.seq_scaling_matrix_present_flag = get_bool(data, offset);
     if (sps.seq_scaling_matrix_present_flag) {
       unsigned long scaling_list_flag_len = 12;
       if (sps.chroma_format_idc != 3) {
@@ -61,8 +58,7 @@ Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
       }
       sps.seq_scaling_list_present_flag.resize(scaling_list_flag_len);
       for (int i = 0; i < scaling_list_flag_len; i++) {
-        sps.seq_scaling_list_present_flag[i] = static_cast<bool>(bit::get_bit(data, offset));
-        offset += 1;
+        sps.seq_scaling_list_present_flag[i] = get_bool(data, offset);
 #ifdef DEBUG
         auto tmp_offset = offset;
 #endif
@@ -88,8 +84,7 @@ Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
   if (sps.pic_order_cnt_type == 0) {
     sps.log2_max_pic_order_cnt_lsb_minus4 = uev_decode(data, offset, "log2_max_pic_order_cnt_lsb_minus4");
   } else if (sps.pic_order_cnt_type == 1) {
-    sps.delta_pic_order_always_zero_flag = static_cast<bool>(bit::get_bit(data, offset));
-    offset += 1;
+    sps.delta_pic_order_always_zero_flag = get_bool(data, offset);
 
     sps.offset_for_non_ref_pic = sev_decode(data, offset, "offset_for_non_ref_pic");
 
@@ -111,25 +106,20 @@ Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
   }
 
   sps.max_num_ref_frames = uev_decode(data, offset, "max_num_ref_frames");
-  sps.gaps_in_frame_num_value_allowed_flag = static_cast<bool>(bit::get_bit(data, offset));
-  offset += 1;
+  sps.gaps_in_frame_num_value_allowed_flag = get_bool(data, offset);
 
   sps.pic_width_in_mbs_minus1 = uev_decode(data, offset, "pic_width_in_mbs_minus1");
   sps.pic_height_in_map_units_minus1 = uev_decode(data, offset, "pic_height_in_map_units_minus1");
 
-  sps.frame_mbs_only_flag = static_cast<bool>(bit::get_bit(data, offset));
-  offset += 1;
+  sps.frame_mbs_only_flag = get_bool(data, offset);
 
   if (!sps.frame_mbs_only_flag) {
-    sps.mb_adaptive_frame_field_flag = static_cast<bool>(bit::get_bit(data, offset));
-    offset += 1;
+    sps.mb_adaptive_frame_field_flag = get_bool(data, offset);
   }
 
-  sps.direct_8x8_inference_flag = static_cast<bool>(bit::get_bit(data, offset));
-  offset += 1;
+  sps.direct_8x8_inference_flag = get_bool(data, offset);
 
-  sps.frame_cropping_flag = static_cast<bool>(bit::get_bit(data, offset));
-  offset += 1;
+  sps.frame_cropping_flag = get_bool(data, offset);
   if (sps.frame_cropping_flag) {
     sps.frame_crop_left_offset = uev_decode(data, offset, "frame_crop_left_offset");
     sps.frame_crop_right_offset = uev_decode(data, offset, "frame_crop_right_offset");
@@ -137,17 +127,15 @@ Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
     sps.frame_crop_bottom_offset = uev_decode(data, offset, "frame_crop_bottom_offset");
   }
 
-  sps.vui_parameters_present_flag = static_cast<bool>(bit::get_bit(data, offset));
-  offset += 1;
+  sps.vui_parameters_present_flag = get_bool(data, offset);
   if (sps.vui_parameters_present_flag) {
     auto vui_parser = new VUI_Parser();
     sps.vui = vui_parser->parse(data, len, offset);
     delete vui_parser;
   }
   if (offset < len * 8) {
-    auto trailing_bit = bit::get_bit(data, offset);
+    auto trailing_bit = get_bool(data, offset);
     ASSERT(trailing_bit == 1, "Fail to check the trailing bit");
-    offset += 1;
 #ifdef DEBUG
     std::cout << "trailing bit in sps, length= " << (len * 8 - offset) << std::endl;
 #endif
