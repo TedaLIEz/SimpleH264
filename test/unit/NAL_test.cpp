@@ -6,14 +6,17 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include <cstring>
-TEST(NAL, ParseHeader_Test) {
+
+
+TEST(NAL_Parse_Header_Test, ParseHeader_Test) {
   unsigned char mock_data[] = {0x67};
-  auto header = parse_header(mock_data, 1);
+  unsigned long offset = 0;
+  auto parser = new NAL_Parser();
+  auto header = parser->parse_header(mock_data, offset);
   EXPECT_EQ(header.nal_unit_type, 7);
   EXPECT_EQ(header.nal_ref_idc, 3);
   EXPECT_EQ(header.forbidden_zero_bit, 0);
 }
-
 
 TEST(NAL, SODB_Single_Test) {
   unsigned char mock_data[] = {0x00, 0x00, 0x03, 0x01};

@@ -3,9 +3,30 @@
 //
 
 #include <fstream>
-#include <nalu_header.h>
+#include <nalu.h>
 #include <bitutil.h>
-#include <string.h>
+#include <cstring>
+#include <nalu_parser.h>
+
+NALU NAL_Parser::parse(unsigned char *data, unsigned long len, unsigned long &offset) {
+  NALU nalu{};
+  nalu.header = parse_header(data, offset);
+  nalu.data = data;
+  nalu.size = len - 1;
+  return nalu;
+}
+
+NALU_header NAL_Parser::parse_header(unsigned char *data, unsigned long& offset) {
+  NALU_header header{};
+  memcpy(&header, data, sizeof(header));
+  offset += 8;
+  return header;
+}
+
+int NAL_Parser::getType() {
+  return 0;
+}
+
 int read_one_sodb(unsigned char *nalu, unsigned long &nalu_size) {
   if (bit::next_bit(nalu, nalu_size, 1, 0) != 0) {
     return -1;
@@ -95,10 +116,4 @@ int read_one_nalu(std::ifstream &file, unsigned long start, unsigned char *&nalu
   delete[] buffer;
   return 1;
 
-}
-
-nalu_header parse_header(unsigned char* nalu, unsigned long nalu_size) {
-  nalu_header header{};
-  memcpy(&header, nalu, sizeof(header));
-  return header;
 }

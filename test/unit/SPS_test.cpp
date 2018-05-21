@@ -264,50 +264,6 @@ TEST_F(SpsTestCase, SPS_with_vui_hrd) {
   EXPECT_EQ(sps2.frame_crop_top_offset ,0);
   EXPECT_EQ(sps2.frame_crop_bottom_offset ,1);
   EXPECT_EQ(sps2.vui_parameters_present_flag ,1);
-//  === VUI ===
-//      aspect_ratio_info_present_flag : 1
-//  aspect_ratio_idc : 1
-//  sar_width : 0
-//  sar_height : 0
-//  overscan_info_present_flag : 0
-//  overscan_appropriate_flag : 0
-//  video_signal_type_present_flag : 1
-//  video_format : 5
-//  video_full_range_flag : 0
-//  colour_description_present_flag : 1
-//  colour_primaries : 6
-//  transfer_characteristics : 1
-//  matrix_coefficients : 6
-//  chroma_loc_info_present_flag : 1
-//  chroma_sample_loc_type_top_field : 2
-//  chroma_sample_loc_type_bottom_field : 2
-//  timing_info_present_flag : 0
-//  num_units_in_tick : 0
-//  time_scale : 0
-//  fixed_frame_rate_flag : 0
-//  nal_hrd_parameters_present_flag : 1
-//  vcl_hrd_parameters_present_flag : 0
-//  low_delay_hrd_flag : 0
-//  pic_struct_present_flag : 0
-//  bitstream_restriction_flag : 0
-//  motion_vectors_over_pic_boundaries_flag : 0
-//  max_bytes_per_pic_denom : 0
-//  max_bits_per_mb_denom : 0
-//  log2_max_mv_length_horizontal : 0
-//  log2_max_mv_length_vertical : 0
-//  num_reorder_frames : 0
-//  max_dec_frame_buffering : 0
-//                                === HRD ===
-//                                cpb_cnt_minus1 : 0
-//  bit_rate_scale : 7
-//  cpb_size_scale : 10
-//  bit_rate_value_minus1[0] : 488
-//  cpb_size_value_minus1[0] : 244
-//  cbr_flag[0] : 0
-//  initial_cpb_removal_delay_length_minus1 : 23
-//  cpb_removal_delay_length_minus1 : 23
-//  dpb_output_delay_length_minus1 : 23
-//  time_offset_length : 24
 }
 
 TEST(SpsScalingListTest, SPS_Scaling_list) {
