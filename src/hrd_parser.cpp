@@ -2,7 +2,7 @@
 // Created by aLIEzTed on 5/19/18.
 //
 
-#include "hrd_parser.h"
+#include "parser/hrd_parser.h"
 
 HRD HRD_Parser::parse(unsigned char *data, unsigned long len, unsigned long& offset) {
   HRD hrd{};

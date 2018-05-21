@@ -3,8 +3,8 @@
 //
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "hrd.h"
-#include "hrd_parser.h"
+#include "h264/hrd.h"
+#include "parser/hrd_parser.h"
 class HrdTestCase : public ::testing::Test {
  protected:
   static HRD hrd;

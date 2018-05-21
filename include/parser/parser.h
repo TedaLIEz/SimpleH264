@@ -5,8 +5,8 @@
 #ifndef SIMPLEH264_PARSER_H
 #define SIMPLEH264_PARSER_H
 #include <sstream>
-#include "sps.h"
-#include "golomb.h"
+#include "h264/sps.h"
+#include "util/golomb.h"
 template <class T>
 class Parser {
  public:

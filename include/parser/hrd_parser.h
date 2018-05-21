@@ -5,7 +5,7 @@
 #ifndef SIMPLEH264_HRD_PARSER_H
 #define SIMPLEH264_HRD_PARSER_H
 #include "parser.h"
-#include "hrd.h"
+#include "h264/hrd.h"
 class HRD_Parser : public Parser<HRD> {
  public:
   HRD parse(unsigned char *data, unsigned long len, unsigned long& offset) override;

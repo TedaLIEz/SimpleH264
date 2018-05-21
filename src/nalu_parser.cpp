@@ -3,10 +3,10 @@
 //
 
 #include <fstream>
-#include <nalu.h>
-#include <bitutil.h>
+#include <h264/nalu.h>
+#include <util/bitutil.h>
 #include <cstring>
-#include <nalu_parser.h>
+#include <parser/nalu_parser.h>
 
 NALU NAL_Parser::parse(unsigned char *data, unsigned long len, unsigned long &offset) {
   NALU nalu{};

@@ -4,7 +4,7 @@
 
 #ifndef SIMPLEH264_SPS_H
 #define SIMPLEH264_SPS_H
-#include "debug.h"
+#include "util/debug.h"
 #include "vui.h"
 #include <vector>
 class Sps {

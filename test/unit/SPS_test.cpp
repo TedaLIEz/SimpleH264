@@ -4,8 +4,8 @@
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include "sps_parser.h"
-#include "sps.h"
+#include "parser/sps_parser.h"
+#include "h264/sps.h"
 
 class SpsTestCase : public ::testing::Test {
  protected:

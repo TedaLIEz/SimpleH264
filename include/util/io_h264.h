@@ -10,7 +10,7 @@
 #include <vector>
 #include <iostream>
 #include "bitutil.h"
-#include "nalu.h"
+#include "h264/nalu.h"
 namespace io {
 inline bool file_exist(const std::string& file_path) {
   std::ifstream file(file_path);

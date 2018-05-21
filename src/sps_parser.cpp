@@ -1,11 +1,11 @@
 //
 // Created by aLIEzTed on 5/14/18.
 //
-#include <golomb.h>
+#include <util/golomb.h>
 #include <sstream>
-#include "debug.h"
-#include "sps_parser.h"
-#include "vui_parser.h"
+#include "util/debug.h"
+#include "parser/sps_parser.h"
+#include "parser/vui_parser.h"
 Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &offset) {
   Sps sps;
 //  unsigned long offset = 0;

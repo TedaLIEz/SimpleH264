@@ -4,7 +4,7 @@
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include "golomb.h"
+#include "util/golomb.h"
 #include <cstring>
 TEST(Golomb, Golomb_uev_encode_test) {
   auto * bits = new unsigned char;

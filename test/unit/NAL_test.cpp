@@ -2,7 +2,7 @@
 // Created by aLIEzTed on 5/15/18.
 //
 
-#include <nalu_parser.h>
+#include <parser/nalu_parser.h>
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include <cstring>

@@ -5,8 +5,8 @@
 #include "bitstream.h"
 #include <iostream>
 #include <fstream>
-#include <debug.h>
-#include <io_h264.h>
+#include <util/debug.h>
+#include <util/io_h264.h>
 // TODO: can this be unit tested?
 void BitStream::start_parse(const std::string &str) {
   unsigned char *data;

@@ -1,11 +1,11 @@
 #include <iostream>
-#include <nalu_parser.h>
-#include <io_h264.h>
+#include <parser/nalu_parser.h>
+#include <util/io_h264.h>
 #include <bitstream.h>
-#include "debug.h"
-#include "golomb.h"
-#include "sps_parser.h"
-#include "nalu_parser.h"
+#include "util/debug.h"
+#include "util/golomb.h"
+#include "parser/sps_parser.h"
+#include "parser/nalu_parser.h"
 void test_nalu();
 
 int main() {

@@ -1,8 +1,8 @@
 //
 // Created by aLIEzTed on 5/19/18.
 //
-#include "vui.h"
-#include "vui_parser.h"
+#include "h264/vui.h"
+#include "parser/vui_parser.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 

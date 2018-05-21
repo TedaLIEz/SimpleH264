@@ -6,7 +6,7 @@
 #define SIMPLEH264_GOLOMB_H
 
 #include <cstdint>
-#include "bitutil.h"
+#include "util/bitutil.h"
 #include <cstring>
 namespace golomb {
 inline int get_uev_encode(unsigned int code_num, unsigned char* bits, long& len) {

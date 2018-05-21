@@ -5,7 +5,7 @@
 #ifndef SIMPLEH264_VUI_PARSER_H
 #define SIMPLEH264_VUI_PARSER_H
 #include "parser.h"
-#include "vui.h"
+#include "h264/vui.h"
 #define Extended_SAR 255
 class VUI_Parser : public Parser<VUI> {
  public:

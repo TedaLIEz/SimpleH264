@@ -1,9 +1,9 @@
 //
 // Created by aLIEzTed on 5/19/18.
 //
-#include <hrd_parser.h>
-#include "vui_parser.h"
-#include "nalu.h"
+#include <parser/hrd_parser.h>
+#include "parser/vui_parser.h"
+#include "h264/nalu.h"
 VUI VUI_Parser::parse(unsigned char *data, unsigned long len, unsigned long& offset) {
   VUI vui{};
 //  unsigned long offset = 0;

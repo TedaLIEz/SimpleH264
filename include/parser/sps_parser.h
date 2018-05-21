@@ -5,7 +5,7 @@
 #ifndef SIMPLEH264_SPS_PARSER_H
 #define SIMPLEH264_SPS_PARSER_H
 #include "parser.h"
-#include "bitutil.h"
+#include "util/bitutil.h"
 #include <vector>
 #ifdef _TEST
 #include <gtest/gtest_prod.h>

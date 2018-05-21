@@ -4,7 +4,7 @@
 
 #ifndef SIMPLEH264_NALU_PARSER_H
 #define SIMPLEH264_NALU_PARSER_H
-#include <nalu.h>
+#include <h264/nalu.h>
 #include <fstream>
 #include "parser.h"
 #ifdef _TEST

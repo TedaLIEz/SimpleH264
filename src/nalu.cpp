@@ -3,7 +3,7 @@
 //
 
 #include <sstream>
-#include "nalu.h"
+#include "h264/nalu.h"
 
 std::ostream &operator<<(std::ostream &os, const NALU &nalu) {
   os << std::endl
