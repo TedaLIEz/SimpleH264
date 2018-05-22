@@ -15,7 +15,7 @@ class PPS {
   bool bottom_field_pic_order_in_frame_present_flag;
   int num_slice_groups_minus1;
 
-  int slice_group_map_type;
+  int slice_group_map_type;  //01101000
 
   std::vector<int> run_length_minus1;
 
@@ -28,8 +28,8 @@ class PPS {
   int pic_size_in_map_units_minus1;
   std::vector<int> slice_group_id;
 
-  int num_ref_idx_10_default_active_minus1;
-  int num_ref_idx_11_default_active_minus1;
+  int num_ref_idx_l0_default_active_minus1;
+  int num_ref_idx_l1_default_active_minus1;
   bool weighted_pred_flag;
   int weighted_bipred_idc;
   int pic_init_qp_minus26;

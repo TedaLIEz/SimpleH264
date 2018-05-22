@@ -20,6 +20,8 @@ set(C_PARSER_SRC
         unit/Golomb_test.cpp
         unit/HRD_test.cpp
         unit/VUI_test.cpp
+        unit/PPS_test.cpp
+        ../src/pps_parser.cpp
         ../src/vui_parser.cpp
         ../src/nalu_parser.cpp
         ../src/sps_parser.cpp
