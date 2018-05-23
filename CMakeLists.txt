@@ -8,7 +8,7 @@ include_directories(include)
 add_subdirectory(test)
 set(H264_HEAD include)
 set(SOURCE_FILES src/main.cpp src/nalu_parser.cpp src/sps_parser.cpp src/nalu.cpp
-        src/vui_parser.cpp src/hrd_parser.cpp src/bitstream.cpp src/pps_parser.cpp)
+        src/vui_parser.cpp src/hrd_parser.cpp src/bitstream.cpp src/pps_parser.cpp src/context.cpp)
 add_executable(SimpleH264 ${H264_HEAD} ${SOURCE_FILES})
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)

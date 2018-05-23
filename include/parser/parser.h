@@ -5,11 +5,13 @@
 #ifndef SIMPLEH264_PARSER_H
 #define SIMPLEH264_PARSER_H
 #include <sstream>
+#include <context.h>
 #include "h264/sps.h"
 #include "util/golomb.h"
 template <class T>
 class Parser {
  public:
+  Context& ctx = Context::getInstance();
   Parser() = default;
   virtual T parse(unsigned char* data, unsigned long len, unsigned long& offset) = 0;
   virtual int getType() = 0;

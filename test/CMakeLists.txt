@@ -21,6 +21,8 @@ set(C_PARSER_SRC
         unit/HRD_test.cpp
         unit/VUI_test.cpp
         unit/PPS_test.cpp
+        unit/Context_test.cpp
+        ../src/context.cpp
         ../src/pps_parser.cpp
         ../src/vui_parser.cpp
         ../src/nalu_parser.cpp
