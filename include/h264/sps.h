@@ -7,7 +7,7 @@
 #include "util/debug.h"
 #include "vui.h"
 #include <vector>
-class Sps {
+class SPS {
  public:
   int profile_idc;
   bool cons_set0_flag;
@@ -59,7 +59,7 @@ class Sps {
   bool vui_parameters_present_flag;
   VUI vui;
 
-  explicit Sps()
+  explicit SPS()
       : chroma_format_idc(1),
         separate_colour_plane_flag(false),
         bit_depth_luma_minus8(0),

@@ -10,7 +10,7 @@
 #ifdef _TEST
 #include <gtest/gtest_prod.h>
 #endif
-class Sps_Parser : public Parser<Sps> {
+class Sps_Parser : public Parser<SPS> {
  private:
   const int id = 7;
 
@@ -26,7 +26,7 @@ class Sps_Parser : public Parser<Sps> {
                    bool &useDefaultScalingMatrixFlag);
  public:
   Sps_Parser() : Parser() {}
-  Sps parse(unsigned char *data, unsigned long len, unsigned long& offset) override;
+  SPS parse(unsigned char *data, unsigned long len, unsigned long& offset) override;
 
 
   int getType() override;

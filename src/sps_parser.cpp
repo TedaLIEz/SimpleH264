@@ -6,8 +6,8 @@
 #include "util/debug.h"
 #include "parser/sps_parser.h"
 #include "parser/vui_parser.h"
-Sps Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &offset) {
-  Sps sps;
+SPS Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &offset) {
+  SPS sps;
 //  unsigned long offset = 0;
   auto profile_idc = bit::read_bytes(data, len, offset);
   sps.profile_idc = profile_idc;

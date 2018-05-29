@@ -10,7 +10,7 @@
 class SpsTestCase : public ::testing::Test {
  protected:
   // Some expensive resource shared by all tests.
-  static Sps sps, sps2;
+  static SPS sps, sps2;
   // Per-test-case set-up.
   // Called before the first test in this test case.
   // Can be omitted if not needed.
@@ -94,8 +94,8 @@ class SpsTestCase : public ::testing::Test {
 
 };
 
-Sps SpsTestCase::sps;
-Sps SpsTestCase::sps2;
+SPS SpsTestCase::sps;
+SPS SpsTestCase::sps2;
 
 TEST_F(SpsTestCase, SPS_Profile_idc) {
   EXPECT_EQ(sps.profile_idc, 0x64);
