@@ -9,7 +9,7 @@ PPS Pps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
   pps.pic_parameter_set_id = uev_decode(data, offset, "pic_parameter_set_id");
   pps.seq_parameter_set_id = uev_decode(data, offset, "seq_parameter_set_id");
   pps.entropy_coding_mode_flag = get_bool(data, offset);
-  pps.bottom_field_pic_order_in_frame_present_flag = get_bool(data, offset);
+  pps.pic_order_present_flag = get_bool(data, offset);
   pps.num_slice_groups_minus1 = uev_decode(data, offset, "num_slice_groups_minus1");
   if (pps.num_slice_groups_minus1 > 0) {
     pps.slice_group_map_type = uev_decode(data, offset, "slice_group_map_type");

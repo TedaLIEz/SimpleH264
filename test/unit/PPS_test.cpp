@@ -35,7 +35,7 @@ TEST_F(PpsTestCase, PPS_entropy_coding_mode_flag) {
 }
 
 TEST_F(PpsTestCase, PPS_bottom_field_pic_order_in_frame_present_flag) {
-  EXPECT_EQ(pps.bottom_field_pic_order_in_frame_present_flag, true);
+  EXPECT_EQ(pps.pic_order_present_flag, true);
 }
 
 TEST_F(PpsTestCase, PPS_num_slice_groups_minus1) {

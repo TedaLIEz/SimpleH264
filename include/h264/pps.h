@@ -12,7 +12,7 @@ class PPS {
   int pic_parameter_set_id;
   int seq_parameter_set_id;
   bool entropy_coding_mode_flag;
-  bool bottom_field_pic_order_in_frame_present_flag;
+  bool pic_order_present_flag;
   int num_slice_groups_minus1;
 
   int slice_group_map_type;  //01101000
