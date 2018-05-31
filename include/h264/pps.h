@@ -35,7 +35,7 @@ class PPS {
   int pic_init_qp_minus26;
   int pic_init_qs_minus26;
   int chroma_qp_index_offset;
-  bool deblocking_filter_control_present_flag;
+  bool deblocking_filter_variables_present_flag;
   bool constrained_intra_pred_flag;
   bool redundant_pic_cnt_present_flag;
 

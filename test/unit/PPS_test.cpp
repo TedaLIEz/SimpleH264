@@ -75,7 +75,7 @@ TEST_F(PpsTestCase, PPS_chroma_qp_index_offset) {
 }
 
 TEST_F(PpsTestCase, PPS_deblocking_filter_control_present_flag) {
-  EXPECT_EQ(pps.deblocking_filter_control_present_flag, false);
+  EXPECT_EQ(pps.deblocking_filter_variables_present_flag, false);
 }
 
 TEST_F(PpsTestCase, PPS_constrained_intra_pred_flag) {

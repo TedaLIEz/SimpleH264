@@ -44,7 +44,7 @@ PPS Pps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
   pps.pic_init_qp_minus26 = sev_decode(data, offset, "pic_init_qp_minus26");
   pps.pic_init_qs_minus26 = sev_decode(data, offset, "pic_init_qs_minus26");
   pps.chroma_qp_index_offset = sev_decode(data, offset, "chroma_qp_index_offset");
-  pps.deblocking_filter_control_present_flag = get_bool(data, offset);
+  pps.deblocking_filter_variables_present_flag = get_bool(data, offset);
   pps.constrained_intra_pred_flag = get_bool(data, offset);
   pps.redundant_pic_cnt_present_flag = get_bool(data, offset);
   int trailing_len = more_rbsp_data(data, len, offset);
