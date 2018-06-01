@@ -11,7 +11,6 @@
 template <class T>
 class Parser {
  public:
-  Context& ctx = Context::getInstance();
   Parser() = default;
   virtual T parse(unsigned char* data, unsigned long len, unsigned long& offset) = 0;
   virtual int getType() = 0;

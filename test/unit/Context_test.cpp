@@ -6,28 +6,25 @@
 #include "parser/pps_parser.h"
 #include "parser/sps_parser.h"
 TEST(Context_Test, Single_Context_Test) {
-  auto pps_parser = new Pps_Parser();
-  auto sps_parser = new Sps_Parser();
-  EXPECT_EQ(&sps_parser->ctx, &pps_parser->ctx);
-  delete pps_parser;
-  delete sps_parser;
+  auto ctx1 = Context::getInstance();
+  auto ctx2 = Context::getInstance();
+  EXPECT_EQ(ctx1, ctx2);
 }
 
 TEST(Context_Test, Add_SPS_Test) {
-  auto sps_parser = new Sps_Parser();
+  auto ctx = Context::getInstance();
   SPS sps;
   sps.seq_parameter_set_id = 42;
-  sps_parser->ctx.add_sps(&sps);
-  EXPECT_EQ(sps_parser->ctx.lookup_sps_table(42)->seq_parameter_set_id, sps.seq_parameter_set_id);
-  delete sps_parser;
+  ctx->add_sps(sps);
+  EXPECT_EQ(ctx->lookup_sps_table(42).seq_parameter_set_id, sps.seq_parameter_set_id);
 }
 
 TEST(Context_Test, Add_PPS_Test) {
-  auto sps_parser = new Sps_Parser();
+  auto ctx = Context::getInstance();
   PPS pps;
   pps.pic_parameter_set_id = 42;
-  sps_parser->ctx.add_pps(&pps);
-  EXPECT_EQ(sps_parser->ctx.lookup_pps_table(42)->pic_parameter_set_id, pps.pic_parameter_set_id);
+  ctx->add_pps(pps);
+  EXPECT_EQ(ctx->lookup_pps_table(42).pic_parameter_set_id, pps.pic_parameter_set_id);
 }
 
 

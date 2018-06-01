@@ -10,26 +10,26 @@
 #include <memory>
 class Context {
  private:
-  static std::unique_ptr<Context> ctx;
-  std::map<int, SPS*> sps_table;
-  std::map<int, PPS*> pps_table;
+  static Context* ctx;
+  std::map<int, SPS> sps_table;
+  std::map<int, PPS> pps_table;
   Context() {}
  public:
 
-  static Context &getInstance() {
-    if (ctx.get() == nullptr) {
-      ctx.reset(new Context());
+  static Context *getInstance() {
+    if (ctx == nullptr) {
+      ctx = new Context();
     }
-    return *ctx;
+    return ctx;
   }
 
-  const SPS* lookup_sps_table(int id);
+  const SPS& lookup_sps_table(int id);
 
-  const PPS* lookup_pps_table(int id);
+  const PPS& lookup_pps_table(int id);
 
-  void add_sps(SPS* sps);
+  void add_sps(SPS sps);
 
-  void add_pps(PPS* pps);
+  void add_pps(PPS pps);
 
 };
 #endif //SIMPLEH264_CONTEXT_H
