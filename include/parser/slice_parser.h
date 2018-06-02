@@ -21,7 +21,7 @@ class Slice_Parser : public Parser<Slice> {
   void pred_weight_table(unsigned char *data, unsigned long &offset, Slice_header &hdr);
 
   void dec_ref_pic_marking(unsigned char *data, unsigned long &offset, Slice_header &hdr);
-  Slice_header parse_header(unsigned char *data, unsigned long len, unsigned long &offset);
+  Slice_header parse_header(unsigned char *data, unsigned long &offset);
 
  public:
   Slice_Parser() : Parser() {}

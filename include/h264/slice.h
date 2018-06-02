@@ -11,7 +11,13 @@
 #define SLICE_TYPE_SP 3
 #define SLICE_TYPE_SI 4
 class Slice {
+ public:
   Slice_header hdr;
   int mb_skip_run;
+  bool mb_skip_flag;
+  bool mb_field_decoding_flag;
+  bool end_of_slice_flag;
+
+  explicit Slice() {}
 };
 #endif //SIMPLEH264_SLICE_H

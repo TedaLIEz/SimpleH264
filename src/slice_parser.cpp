@@ -7,9 +7,11 @@
 
 Slice Slice_Parser::parse(unsigned char *data, unsigned long len, unsigned long &offset) {
   Slice slice{};
+
+
   return slice;
 }
-Slice_header Slice_Parser::parse_header(unsigned char *data, unsigned long len, unsigned long &offset) {
+Slice_header Slice_Parser::parse_header(unsigned char *data, unsigned long &offset) {
   Slice_header hdr{};
   offset += 8;   // skip the nal header in data
   hdr.first_mb_in_slice = uev_decode(data, offset, "first_mb_in_slice");

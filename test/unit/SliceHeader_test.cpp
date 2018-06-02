@@ -49,7 +49,7 @@ TEST_F(SliceHeaderTestCase, Parse_Header_Test) {
                             0x34, 0xf2, 0x5d, 0xd0, 0xfb, 0x23, 0xe8,
                             0x1b, 0xcf, 0x9c, 0x83, 0x79};
   unsigned long offset = 0;
-  auto header = slice_parser->parse_header(data, 33, offset);
+  auto header = slice_parser->parse_header(data, offset);
   EXPECT_EQ(header.first_mb_in_slice, 0);
   EXPECT_EQ(header.slice_type, SLICE_TYPE_I);
   EXPECT_EQ(header.pic_parameter_set_id, 0);
