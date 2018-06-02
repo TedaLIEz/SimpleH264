@@ -9,11 +9,11 @@
 SPS Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &offset) {
   SPS sps;
 //  unsigned long offset = 0;
-  auto profile_idc = bit::read_bytes(data, len, offset);
+  auto profile_idc = read_bit(data, 8, offset);
   sps.profile_idc = profile_idc;
-  offset += 8;
-  auto flags = static_cast<uint8_t>(bit::next_bit(data, len, 8, offset));
-  offset += 8;
+//  offset += 8;
+  auto flags = read_bit(data, 8, offset);
+//  offset += 8;
   sps.cons_set0_flag = static_cast<bool>(bit::get_bit(flags, 0));
   sps.cons_set1_flag = static_cast<bool>(bit::get_bit(flags, 1));
   sps.cons_set2_flag = static_cast<bool>(bit::get_bit(flags, 2));
@@ -31,8 +31,8 @@ SPS Sps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
   std::cout << "set4_flag " << sps.cons_set4_flag << std::endl;
   std::cout << "set5_flag " << sps.cons_set5_flag << std::endl;
 #endif
-  sps.level_idc = bit::read_bytes(data, len, offset);
-  offset += 8;
+  sps.level_idc = read_bit(data, 8, offset);
+//  offset += 8;
 
   sps.seq_parameter_set_id = uev_decode(data, offset, "seq_parameter_set_id");
   if (profile_idc == 100 || profile_idc == 110 || profile_idc == 122 || profile_idc == 244 || profile_idc == 44

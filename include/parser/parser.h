@@ -8,14 +8,14 @@
 #include <context.h>
 #include "h264/sps.h"
 #include "util/golomb.h"
-template <class T>
+template<class T>
 class Parser {
  public:
   Parser() = default;
-  virtual T parse(unsigned char* data, unsigned long len, unsigned long& offset) = 0;
+  virtual T parse(unsigned char *data, unsigned long len, unsigned long &offset) = 0;
   virtual int getType() = 0;
   virtual ~Parser() = default;
-  int uev_decode(unsigned char* data, unsigned long& offset, const std::string& name) {
+  int uev_decode(unsigned char *data, unsigned long &offset, const std::string &name) {
     long len = -1;
     auto rst = golomb::get_uev_decode(data, offset, len);
     std::ostringstream oss;
@@ -25,7 +25,7 @@ class Parser {
     return rst;
   }
 
-  int sev_decode(unsigned char* data, unsigned long& offset, const std::string& name) {
+  int sev_decode(unsigned char *data, unsigned long &offset, const std::string &name) {
     long len = -1;
     auto rst = golomb::get_sev_decode(data, offset, len);
     std::ostringstream oss;
@@ -34,11 +34,16 @@ class Parser {
     offset += len;
     return rst;
   }
-  
-  bool get_bool(unsigned char* data, unsigned long& offset) {
+
+  bool get_bool(unsigned char *data, unsigned long &offset) {
     return static_cast<bool>(bit::get_bit(data, offset++));
   }
-};
 
+  unsigned long read_bit(unsigned char *data, unsigned long bit_len, unsigned long &offset) {
+    auto rst = bit::next_bit(data, bit_len, offset);
+    offset += bit_len;
+    return rst;
+  }
+};
 
 #endif //SIMPLEH264_PARSER_H

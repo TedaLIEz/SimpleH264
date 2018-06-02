@@ -27,14 +27,14 @@ NALU_header NAL_Parser::parse_header(unsigned char *data, unsigned long& offset)
 }
 
 int NAL_Parser::sodb(unsigned char *nalu, unsigned long &size) {
-  if (bit::next_bit(nalu, size, 1, 0) != 0) {
+  if (bit::next_bit(nalu, 1, 0) != 0) {
     return -1;
   }
   int index = 0;
   while (index < size * 8 - 16) {
-    auto bits = bit::next_bit(nalu, size, 16, index);
+    auto bits = bit::next_bit(nalu, 16, index);
     if (bits == 0x0000) {
-      bits = bit::next_bit(nalu, size, 16, index + 16);
+      bits = bit::next_bit(nalu, 16, index + 16);
       if (bits == 0x0300 || bits == 0x0301 || bits == 0x0302 || bits == 0x0303) {
 #ifdef DEBUG
         std::cout << "find a emulation prevention bytes at " << index << std::endl;

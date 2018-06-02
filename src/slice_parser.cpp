@@ -19,8 +19,8 @@ Slice_header Slice_Parser::parse_header(unsigned char *data, unsigned long len, 
   auto pps = ctx->lookup_pps_table(hdr.pic_parameter_set_id);
   auto sps = ctx->lookup_sps_table(pps.seq_parameter_set_id);
   auto frame_num_len = sps.log2_max_frame_num_minus4 + 4;
-  hdr.frame_num = bit::next_bit(data, len, frame_num_len, offset);
-  offset += frame_num_len;
+  hdr.frame_num = read_bit(data, frame_num_len, offset);
+//  offset += frame_num_len;
   // TODO: how to test this function with context
   if (!sps.frame_mbs_only_flag) {
     hdr.field_pic_flag = get_bool(data, offset);
@@ -36,8 +36,8 @@ Slice_header Slice_Parser::parse_header(unsigned char *data, unsigned long len, 
   }
   if (sps.pic_order_cnt_type == 0) {
     auto pic_order_cnt_lsb_len = sps.log2_max_pic_order_cnt_lsb_minus4 + 4;
-    hdr.pic_order_cnt_lsb = bit::next_bit(data, len, pic_order_cnt_lsb_len, offset);
-    offset += pic_order_cnt_lsb_len;
+    hdr.pic_order_cnt_lsb = read_bit(data, pic_order_cnt_lsb_len, offset);
+//    offset += pic_order_cnt_lsb_len;
     if (pps.pic_order_present_flag == 1 && !hdr.field_pic_flag) {
       hdr.delta_pic_order_cnt_bottom = sev_decode(data, offset, "delta_pic_order_cnt_bottom");
     }
@@ -109,8 +109,8 @@ Slice_header Slice_Parser::parse_header(unsigned char *data, unsigned long len, 
     }
 
     slice_group_change_cycle_len = math::CeilLog2(slice_group_change_cycle_len + 1);
-    hdr.slice_group_change_cycle = bit::next_bit(data, len, slice_group_change_cycle_len, offset);
-    offset += slice_group_change_cycle_len;
+    hdr.slice_group_change_cycle = read_bit(data, slice_group_change_cycle_len, offset);
+//    offset += slice_group_change_cycle_len;
   }
   return hdr;
 }

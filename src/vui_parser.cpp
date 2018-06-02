@@ -9,12 +9,12 @@ VUI VUI_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
 //  unsigned long offset = 0;
   vui.aspect_ratio_info_present_flag = get_bool(data, offset);
   if (vui.aspect_ratio_info_present_flag) {
-    vui.aspect_ratio_idc = bit::read_bytes(data, len, offset);
+    vui.aspect_ratio_idc = bit::read_bytes(data, offset);
     offset += 8;
     if (vui.aspect_ratio_idc == Extended_SAR) {
-      vui.sar_height = bit::next_bit(data, len, 16, offset);
+      vui.sar_height = bit::next_bit(data, 16, offset);
       offset += 16;
-      vui.sar_width = bit::next_bit(data, len, 16, offset);
+      vui.sar_width = bit::next_bit(data, 16, offset);
       offset += 16;
     }
   }
@@ -25,17 +25,17 @@ VUI VUI_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
   }
   vui.video_signal_type_present_flag = get_bool(data, offset);
   if (vui.video_signal_type_present_flag) {
-    vui.video_format = bit::next_bit(data, len, 3, offset);
+    vui.video_format = bit::next_bit(data, 3, offset);
     offset += 3;
     vui.video_full_range_flag = get_bool(data, offset);
     vui.colour_description_present_flag = get_bool(data, offset);
     if (vui.colour_description_present_flag) {
-      vui.colour_primaries = bit::read_bytes(data, len, offset);
-      offset += 8;
-      vui.transfer_characteristics = bit::read_bytes(data, len, offset);
-      offset += 8;
-      vui.matrix_coefficients = bit::read_bytes(data, len, offset);
-      offset += 8;
+      vui.colour_primaries = read_bit(data, 8, offset);
+//      offset += 8;
+      vui.transfer_characteristics = read_bit(data, 8, offset);
+//      offset += 8;
+      vui.matrix_coefficients = read_bit(data, 8, offset);
+//      offset += 8;
     }
   }
   vui.chroma_loc_info_present_flag = get_bool(data, offset);
@@ -45,9 +45,9 @@ VUI VUI_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
   }
   vui.timing_info_present_flag = get_bool(data, offset);
   if (vui.timing_info_present_flag) {
-    vui.num_units_in_tick = bit::next_bit(data, len, 32, offset);
+    vui.num_units_in_tick = bit::next_bit(data, 32, offset);
     offset += 32;
-    vui.time_scale = bit::next_bit(data, len, 32, offset);
+    vui.time_scale = bit::next_bit(data, 32, offset);
     offset += 32;
     vui.fixed_frame_rate_flag = get_bool(data, offset);
   }

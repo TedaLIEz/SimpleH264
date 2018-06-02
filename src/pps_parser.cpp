@@ -39,8 +39,8 @@ PPS Pps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
   pps.num_ref_idx_l0_default_active_minus1 = uev_decode(data, offset, "num_ref_idx_l0_default_active_minus1");
   pps.num_ref_idx_l1_default_active_minus1 = uev_decode(data, offset, "num_ref_idx_l1_default_active_minus1");
   pps.weighted_pred_flag = get_bool(data, offset);
-  pps.weighted_bipred_idc = bit::next_bit(data, len, 2, offset);
-  offset += 2;
+  pps.weighted_bipred_idc = read_bit(data, 2, offset);
+//  offset += 2;
   pps.pic_init_qp_minus26 = sev_decode(data, offset, "pic_init_qp_minus26");
   pps.pic_init_qs_minus26 = sev_decode(data, offset, "pic_init_qs_minus26");
   pps.chroma_qp_index_offset = sev_decode(data, offset, "chroma_qp_index_offset");
@@ -66,7 +66,7 @@ int Pps_Parser::getType() {
 
 int Pps_Parser::more_rbsp_data(unsigned char* data, unsigned long len, unsigned long offset) {
   auto trailing_len = len * 8 - offset;
-  auto trailing_rst = bit::next_bit(data, len, trailing_len, offset);
+  auto trailing_rst = bit::next_bit(data, trailing_len, offset);
   auto mask = 1 << (trailing_len - 1);
   if (mask != trailing_rst) return 0;
   else return trailing_len;
