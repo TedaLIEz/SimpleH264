@@ -22,6 +22,8 @@ set(C_PARSER_SRC
         unit/VUI_test.cpp
         unit/PPS_test.cpp
         unit/Context_test.cpp
+        unit/SliceHeader_test.cpp
+        ../src/slice_parser.cpp
         ../src/context.cpp
         ../src/pps_parser.cpp
         ../src/vui_parser.cpp

@@ -60,7 +60,13 @@ class SPS {
   VUI vui;
 
   explicit SPS()
-      : chroma_format_idc(1),
+      : cons_set0_flag(false),
+        cons_set1_flag(false),
+        cons_set2_flag(false),
+        cons_set3_flag(false),
+        cons_set4_flag(false),
+        cons_set5_flag(false),
+        chroma_format_idc(1),
         separate_colour_plane_flag(false),
         bit_depth_luma_minus8(0),
         bit_depth_chroma_minus8(0),
