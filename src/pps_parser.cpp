@@ -49,7 +49,7 @@ PPS Pps_Parser::parse(unsigned char *data, unsigned long len, unsigned long &off
   pps.redundant_pic_cnt_present_flag = get_bool(data, offset);
   int trailing_len = more_rbsp_data(data, len, offset);
   if (!trailing_len) {
-    // TODO: more_rbsp_data()
+    // TODO: more_rbsp_data to be parsed
 #ifdef DEBUG
     std::cout << "more_rbsp_data() in pps at offset " << offset << std::endl;
 #endif
@@ -64,12 +64,5 @@ int Pps_Parser::getType() {
   return id;
 }
 
-int Pps_Parser::more_rbsp_data(unsigned char* data, unsigned long len, unsigned long offset) {
-  auto trailing_len = len * 8 - offset;
-  auto trailing_rst = bit::next_bit(data, trailing_len, offset);
-  auto mask = 1 << (trailing_len - 1);
-  if (mask != trailing_rst) return 0;
-  else return trailing_len;
-}
 
 Pps_Parser::~Pps_Parser() = default;

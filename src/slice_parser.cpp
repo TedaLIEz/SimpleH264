@@ -226,6 +226,11 @@ Slice Slice_Parser::parse(unsigned char *data, unsigned long len, unsigned long 
         for (int i = 0; i < slice.mb_skip_run; i++) {
           CurrMbAddr = NextMbAddress(CurrMbAddr, slice.hdr);
         }
+        moreDataFlag = more_rbsp_data(data, len, offset) == 0;
+      } else {
+        // TODO: ae(v)
+        slice.mb_skip_flag = true;
+        moreDataFlag = !slice.mb_skip_flag;
       }
     }
   } while (moreDataFlag);

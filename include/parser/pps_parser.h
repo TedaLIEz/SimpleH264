@@ -16,15 +16,7 @@ class Pps_Parser : public Parser<PPS> {
   FRIEND_TEST(PpsMoreRbspDataTest, More_RBSP_Data_Test);
 #endif
 
-  /**
-   * return 0 if we have more rbsp data, else return the length of trailing zeros
-   *
-   * @param data the encoded data store in unsigned char array
-   * @param len  length of data in bytes
-   * @param offset offset by bits
-   * @return 0 if we have more rbsp data, else return the length of trailing zeros
-   */
-  int more_rbsp_data(unsigned char *data, unsigned long len, unsigned long offset);
+
  public:
   Pps_Parser() : Parser() {}
   PPS parse(unsigned char *data, unsigned long len, unsigned long &offset) override;

@@ -36,12 +36,10 @@ class VUI {
 
   bool nal_hrd_parameters_present_flag;
 
-  // TODO: HRD Param
   HRD nal_hrd_param;
 
   bool vcl_hrd_parameters_present_flag;
 
-  // TODO: HRD Param
   HRD vcl_hrd_param;
 
   bool low_delay_hrd_flag;

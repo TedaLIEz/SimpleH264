@@ -44,6 +44,22 @@ class Parser {
     offset += bit_len;
     return rst;
   }
+
+  /**
+ * return 0 if we have more rbsp data, else return the length of trailing zeros
+ *
+ * @param data the encoded data store in unsigned char array
+ * @param len  length of data in bytes
+ * @param offset offset by bits
+ * @return 0 if we have more rbsp data, else return the length of trailing zeros
+ */
+  int more_rbsp_data(unsigned char *data, unsigned long len, unsigned long offset) {
+    auto trailing_len = len * 8 - offset;
+    auto trailing_rst = bit::next_bit(data, trailing_len, offset);
+    auto mask = 1 << (trailing_len - 1);
+    if (mask != trailing_rst) return 0;
+    else return trailing_len;
+  }
 };
 
 #endif //SIMPLEH264_PARSER_H
