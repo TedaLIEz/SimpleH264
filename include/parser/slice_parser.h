@@ -23,6 +23,9 @@ class Slice_Parser : public Parser<Slice> {
   void dec_ref_pic_marking(unsigned char *data, unsigned long &offset, Slice_header &hdr);
   Slice_header parse_header(unsigned char *data, unsigned long &offset);
 
+  int NextMbAddress(int val, const Slice_header& hdr);
+
+  int* mapUnitToSliceGroupMapGen(const Slice_header& hdr);
  public:
   Slice_Parser() : Parser() {}
 

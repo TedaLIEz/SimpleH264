@@ -4,11 +4,206 @@
 
 #include <parser/slice_parser.h>
 #include <util/math.h>
+#include <algorithm>
+
+int Slice_Parser::NextMbAddress(int val, const Slice_header &hdr) {
+  auto i = val + 1;
+
+  auto ctx = Context::getInstance();
+  auto pps = ctx->lookup_pps_table(hdr.pic_parameter_set_id);
+  auto sps = ctx->lookup_sps_table(pps.seq_parameter_set_id);
+  auto PicHeightInMapUnits = sps.pic_height_in_map_units_minus1 + 1;
+  auto FrameHeightInMbs = (2 - sps.frame_mbs_only_flag) * PicHeightInMapUnits;
+  auto PicHeightInMbs = FrameHeightInMbs / (1 + hdr.field_pic_flag);
+
+  auto PicWidthInMbs = sps.pic_width_in_mbs_minus1 + 1;
+  auto PicSizeInMbs = PicHeightInMbs * PicWidthInMbs;
+  int MbToSliceGroupMap[PicSizeInMbs];
+
+  auto mapUnitToSliceGroupMap = mapUnitToSliceGroupMapGen(hdr);
+
+  while (i < PicHeightInMbs && MbToSliceGroupMap[i] != MbToSliceGroupMap[val]) {
+    i++;
+  }
+  delete mapUnitToSliceGroupMap;
+  return i;
+}
+
+int* Slice_Parser::mapUnitToSliceGroupMapGen(const Slice_header &hdr) {
+  auto ctx = Context::getInstance();
+  auto pps = ctx->lookup_pps_table(hdr.pic_parameter_set_id);
+  auto sps = ctx->lookup_sps_table(pps.seq_parameter_set_id);
+  auto PicHeightInMapUnits = sps.pic_height_in_map_units_minus1 + 1;
+
+  auto PicWidthInMbs = sps.pic_width_in_mbs_minus1 + 1;
+
+  auto PicSizeInMapUnits = PicWidthInMbs * PicHeightInMapUnits;
+
+
+  auto mapUnitToSliceGroupMap = new int[PicSizeInMapUnits];
+  if (pps.num_slice_groups_minus1 == 0) {
+    memset(mapUnitToSliceGroupMap, 0, sizeof(int));
+  } else {
+    if (pps.slice_group_map_type == 0) {
+      // specified in 8.2.4.1
+      auto i = 0;
+      do {
+        for (auto iGroup = 0; iGroup <= pps.num_slice_groups_minus1 && i < PicSizeInMapUnits;
+             i += pps.run_length_minus1[iGroup++] + 1) {
+          for (auto j = 0; j <= pps.run_length_minus1[iGroup] && i + j < PicSizeInMapUnits; j++) {
+            mapUnitToSliceGroupMap[i + j] = iGroup;
+          }
+        }
+      } while (i < PicSizeInMapUnits);
+    } else if (pps.slice_group_map_type == 1) {
+      // specified in 8.2.4.2
+      for (auto i = 0; i < PicSizeInMapUnits; i++) {
+        mapUnitToSliceGroupMap[i] = (i % PicWidthInMbs +
+            (i / PicWidthInMbs * (pps.num_slice_groups_minus1 + 1) / 2)) % (pps.num_slice_groups_minus1 + 1);
+
+      }
+    } else if (pps.slice_group_map_type == 2) {
+      // specified in 8.2.4.3
+      for (auto i = 0; i < PicSizeInMapUnits; i++) {
+        mapUnitToSliceGroupMap[i] = pps.num_slice_groups_minus1;
+      }
+
+      for (auto iGroup = pps.num_slice_groups_minus1 - 1; iGroup >= 0; iGroup--) {
+        auto yTopLeft = pps.top_left[iGroup] / PicWidthInMbs;
+        auto xTopLeft = pps.top_left[iGroup] % PicWidthInMbs;
+        auto yBottomRight = pps.bottom_right[iGroup] / PicWidthInMbs;
+        auto xBottomRight = pps.bottom_right[iGroup] % PicWidthInMbs;
+        for (auto y = yTopLeft; y <= yBottomRight; y++)
+          for (auto x = xTopLeft; x <= xBottomRight; x++) {
+            mapUnitToSliceGroupMap[y * PicWidthInMbs + x] = iGroup;
+          }
+
+      }
+    } else if (pps.slice_group_map_type == 3) {
+      // specified in 8.2.4.4
+      ASSERT(pps.num_slice_groups_minus1 == 1,
+             "num_slice_groups_minus1 in NextMbAddress of slice_group_map_type 3 failed");
+      for (auto i = 0; i < PicSizeInMapUnits; i++) {
+        mapUnitToSliceGroupMap[i] = 1;
+      }
+      auto SliceGroupChangeRate = pps.slice_group_change_rate_minus1 + 1;
+      auto mapUnitsInSliceGroup0 = std::min(hdr.slice_group_change_cycle * SliceGroupChangeRate, PicSizeInMapUnits);
+      auto x = (PicWidthInMbs - pps.slice_group_change_direction_flag) / 2;
+      auto y = (PicHeightInMapUnits - pps.slice_group_change_direction_flag) / 2;
+      auto leftBound = x, topBound = y;
+      auto rightBound = x, bottomBound = y;
+      auto xDir = pps.slice_group_change_direction_flag - 1;
+      int yDir = pps.slice_group_change_direction_flag;
+      auto mapUnitVacant = 0;
+      for (auto k = 0; k < mapUnitsInSliceGroup0; k += mapUnitVacant) {
+        mapUnitVacant = mapUnitToSliceGroupMap[y * PicWidthInMbs + x] == 1;
+        if (mapUnitVacant) {
+          mapUnitToSliceGroupMap[y * PicWidthInMbs + x] = 0;
+        }
+
+        if (xDir == -1 && x == leftBound) {
+          leftBound = std::max(leftBound - 1, 0);
+          x = leftBound;
+          xDir = 0;
+          yDir = 2 * pps.slice_group_change_direction_flag - 1;
+        } else if (xDir == 1 && x == rightBound) {
+          rightBound = std::min(rightBound + 1, PicWidthInMbs - 1);
+          x = rightBound;
+          xDir = 0;
+          yDir = 1 - 2 * pps.slice_group_change_direction_flag;
+        } else if (yDir == -1 && y == topBound) {
+          topBound = std::max(topBound - 1, 0);
+          y = topBound;
+          xDir = 1 - 2 * pps.slice_group_change_direction_flag;
+          yDir = 0;
+        } else if (yDir == 1 && y == bottomBound) {
+          bottomBound = std::min(bottomBound + 1, PicHeightInMapUnits - 1);
+          y = bottomBound;
+          xDir = 2 * pps.slice_group_change_direction_flag - 1;
+          yDir = 0;
+        } else {
+          x = x + xDir;
+          y = y + yDir;
+        }
+      }
+
+    } else if (pps.slice_group_map_type == 4) {
+      // specified in 8.2.4.5
+      ASSERT(pps.num_slice_groups_minus1 == 1,
+             "num_slice_groups_minus1 in NextMbAddress of slice_group_map_type 4 failed");
+      auto SliceGroupChangeRate = pps.slice_group_change_rate_minus1 + 1;
+      auto mapUnitsInSliceGroup0 = std::min(hdr.slice_group_change_cycle * SliceGroupChangeRate, PicSizeInMapUnits);
+      auto sizeOfUpperLeftGroup = pps.slice_group_change_direction_flag ?
+                                  (PicSizeInMapUnits - mapUnitsInSliceGroup0) : mapUnitsInSliceGroup0;
+      for (auto j = 0; j < PicSizeInMapUnits; j++)
+        if (j < sizeOfUpperLeftGroup) {
+          mapUnitToSliceGroupMap[j] = pps.slice_group_change_direction_flag;
+        } else {
+          mapUnitToSliceGroupMap[j] = 1 - pps.slice_group_change_direction_flag;
+        }
+    } else if (pps.slice_group_map_type == 5) {
+      // specified in 8.2.4.6
+      ASSERT(pps.num_slice_groups_minus1 == 1,
+             "num_slice_groups_minus1 in NextMbAddress of slice_group_map_type 4 failed");
+      auto SliceGroupChangeRate = pps.slice_group_change_rate_minus1 + 1;
+      auto mapUnitsInSliceGroup0 = std::min(hdr.slice_group_change_cycle * SliceGroupChangeRate, PicSizeInMapUnits);
+      auto sizeOfUpperLeftGroup = pps.slice_group_change_direction_flag ?
+                                  (PicSizeInMapUnits - mapUnitsInSliceGroup0) : mapUnitsInSliceGroup0;
+      auto k = 0;
+      for (auto j = 0; j < PicWidthInMbs; j++)
+        for (auto i = 0; i < PicHeightInMapUnits; i++)
+          if (k++ < sizeOfUpperLeftGroup) {
+            mapUnitToSliceGroupMap[i * PicWidthInMbs + j] = pps.slice_group_change_direction_flag;
+          } else {
+            mapUnitToSliceGroupMap[i * PicWidthInMbs + j] = 1 - pps.slice_group_change_direction_flag;
+          }
+    } else if (pps.slice_group_map_type == 6) {
+      // specified in 8.2.4.7
+      for (auto i = 0; i < PicSizeInMapUnits; i++) {
+        mapUnitToSliceGroupMap[i] = pps.slice_group_id[i];
+      }
+
+    } else {
+#ifdef DEBUG
+      std::cerr << "Invalid slice_group_map_type " << pps.slice_group_map_type << " in mapUnitToSliceGroupMap" << std::endl;
+#endif
+      ASSERT(false, "Invalid slice_group_map_type");
+    }
+  }
+  return mapUnitToSliceGroupMap;
+}
 
 Slice Slice_Parser::parse(unsigned char *data, unsigned long len, unsigned long &offset) {
   Slice slice{};
-
-
+  slice.hdr = parse_header(data, offset);
+  auto ctx = Context::getInstance();
+  auto pps = ctx->lookup_pps_table(slice.hdr.pic_parameter_set_id);
+  auto sps = ctx->lookup_sps_table(pps.seq_parameter_set_id);
+  if (pps.entropy_coding_mode_flag) {
+    // aligned bits
+    auto align = offset;
+    while (offset % 8 != 0) {
+      get_bool(data, offset);
+    }
+#ifdef DEBUG
+    std::cout << "find aligned bits in " << (offset - align) << " bits" << std::endl;
+#endif
+  }
+  auto MbaffFrameFlag = sps.mb_adaptive_frame_field_flag && !slice.hdr.field_pic_flag;
+  auto CurrMbAddr = slice.hdr.first_mb_in_slice * (1 + MbaffFrameFlag);
+  bool moreDataFlag(true);
+  bool prevMbSkipped(false);
+  do {
+    if (slice.hdr.slice_type % 5 != SLICE_TYPE_I && slice.hdr.slice_type != SLICE_TYPE_SI) {
+      if (!pps.entropy_coding_mode_flag) {
+        slice.mb_skip_run = uev_decode(data, offset, "mb_skip_run");
+        prevMbSkipped = slice.mb_skip_run > 0;
+        for (int i = 0; i < slice.mb_skip_run; i++) {
+          CurrMbAddr = NextMbAddress(CurrMbAddr, slice.hdr);
+        }
+      }
+    }
+  } while (moreDataFlag);
   return slice;
 }
 Slice_header Slice_Parser::parse_header(unsigned char *data, unsigned long &offset) {
@@ -60,7 +255,8 @@ Slice_header Slice_Parser::parse_header(unsigned char *data, unsigned long &offs
     hdr.direct_spatial_mv_pred_flag = get_bool(data, offset);
   }
 
-  if (hdr.slice_type % 5 == SLICE_TYPE_P || hdr.slice_type % 5 == SLICE_TYPE_SP || hdr.slice_type % 5 == SLICE_TYPE_B) {
+  if (hdr.slice_type % 5 == SLICE_TYPE_P || hdr.slice_type % 5 == SLICE_TYPE_SP
+      || hdr.slice_type % 5 == SLICE_TYPE_B) {
     hdr.num_ref_idx_active_override_flag = get_bool(data, offset);
     if (hdr.num_ref_idx_active_override_flag) {
       hdr.num_ref_idx_l0_active_minus1 = uev_decode(data, offset, "num_ref_idx_l0_active_minus1");
