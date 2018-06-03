@@ -26,6 +26,7 @@ class Slice_Parser : public Parser<Slice> {
   int NextMbAddress(int val, const Slice_header& hdr);
 
   int* mapUnitToSliceGroupMapGen(const Slice_header& hdr);
+  int* MbToSliceGroupMapGen(const Slice_header& hdr, const int* mapUnitToSliceGroupMap);
  public:
   Slice_Parser() : Parser() {}
 

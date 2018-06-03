@@ -8,7 +8,25 @@
 
 int Slice_Parser::NextMbAddress(int val, const Slice_header &hdr) {
   auto i = val + 1;
+  auto ctx = Context::getInstance();
+  auto pps = ctx->lookup_pps_table(hdr.pic_parameter_set_id);
+  auto sps = ctx->lookup_sps_table(pps.seq_parameter_set_id);
+  auto mapUnitToSliceGroupMap = mapUnitToSliceGroupMapGen(hdr);
+  auto MbToSliceGroupMap = MbToSliceGroupMapGen(hdr, mapUnitToSliceGroupMap);
+  auto PicHeightInMapUnits = sps.pic_height_in_map_units_minus1 + 1;
+  auto FrameHeightInMbs = (2 - sps.frame_mbs_only_flag) * PicHeightInMapUnits;
+  auto PicHeightInMbs = FrameHeightInMbs / (1 + hdr.field_pic_flag);
+  auto PicWidthInMbs = sps.pic_width_in_mbs_minus1 + 1;
+  auto PicSizeInMbs = PicHeightInMbs * PicWidthInMbs;
+  while (i < PicSizeInMbs && MbToSliceGroupMap[i] != MbToSliceGroupMap[val]) {
+    i++;
+  }
+  delete[] mapUnitToSliceGroupMap;
+  delete[] MbToSliceGroupMap;
+  return i;
+}
 
+int *Slice_Parser::MbToSliceGroupMapGen(const Slice_header &hdr, const int *mapUnitToSliceGroupMap) {
   auto ctx = Context::getInstance();
   auto pps = ctx->lookup_pps_table(hdr.pic_parameter_set_id);
   auto sps = ctx->lookup_sps_table(pps.seq_parameter_set_id);
@@ -18,18 +36,25 @@ int Slice_Parser::NextMbAddress(int val, const Slice_header &hdr) {
 
   auto PicWidthInMbs = sps.pic_width_in_mbs_minus1 + 1;
   auto PicSizeInMbs = PicHeightInMbs * PicWidthInMbs;
-  int MbToSliceGroupMap[PicSizeInMbs];
-
-  auto mapUnitToSliceGroupMap = mapUnitToSliceGroupMapGen(hdr);
-
-  while (i < PicHeightInMbs && MbToSliceGroupMap[i] != MbToSliceGroupMap[val]) {
-    i++;
+  auto MbToSliceGroupMap = new int[PicSizeInMbs];
+  auto MbaffFrameFlag = sps.mb_adaptive_frame_field_flag && !hdr.field_pic_flag;
+  if (sps.frame_mbs_only_flag || hdr.field_pic_flag) {
+    for (int i = 0; i < PicSizeInMbs; i++) {
+      MbToSliceGroupMap[i] = mapUnitToSliceGroupMap[i];
+    }
+  } else if (MbaffFrameFlag) {
+    for (int i = 0; i < PicSizeInMbs; i++) {
+      MbToSliceGroupMap[i] = mapUnitToSliceGroupMap[i / 2];
+    }
+  } else {
+    for (int i = 0; i < PicSizeInMbs; i++) {
+      MbToSliceGroupMap[i] = mapUnitToSliceGroupMap[(i / (2 * PicWidthInMbs)) * PicWidthInMbs + (i % PicWidthInMbs)];
+    }
   }
-  delete mapUnitToSliceGroupMap;
-  return i;
+  return MbToSliceGroupMap;
 }
 
-int* Slice_Parser::mapUnitToSliceGroupMapGen(const Slice_header &hdr) {
+int *Slice_Parser::mapUnitToSliceGroupMapGen(const Slice_header &hdr) {
   auto ctx = Context::getInstance();
   auto pps = ctx->lookup_pps_table(hdr.pic_parameter_set_id);
   auto sps = ctx->lookup_sps_table(pps.seq_parameter_set_id);
@@ -38,7 +63,6 @@ int* Slice_Parser::mapUnitToSliceGroupMapGen(const Slice_header &hdr) {
   auto PicWidthInMbs = sps.pic_width_in_mbs_minus1 + 1;
 
   auto PicSizeInMapUnits = PicWidthInMbs * PicHeightInMapUnits;
-
 
   auto mapUnitToSliceGroupMap = new int[PicSizeInMapUnits];
   if (pps.num_slice_groups_minus1 == 0) {
@@ -165,7 +189,8 @@ int* Slice_Parser::mapUnitToSliceGroupMapGen(const Slice_header &hdr) {
 
     } else {
 #ifdef DEBUG
-      std::cerr << "Invalid slice_group_map_type " << pps.slice_group_map_type << " in mapUnitToSliceGroupMap" << std::endl;
+      std::cerr << "Invalid slice_group_map_type " << pps.slice_group_map_type << " in mapUnitToSliceGroupMap"
+                << std::endl;
 #endif
       ASSERT(false, "Invalid slice_group_map_type");
     }
