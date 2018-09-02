@@ -50,20 +50,20 @@ inline int read_one_nalu(std::ifstream &file, unsigned long start, unsigned char
   auto header = new char[6];
   memset(buffer, 0, 4);
   file.read(buffer, 4);
-  while (bit::next_bit(reinterpret_cast<unsigned char *>(buffer), 32, 24, 0) != NAL_HEADER_SHORT
-      && bit::next_bit(reinterpret_cast<unsigned char *>(buffer), 32, 32, 0) != NAL_HEADER_LONG) {
+  while (bit::next_bit(reinterpret_cast<unsigned char *>(buffer), 24, 0) != NAL_HEADER_SHORT
+      && bit::next_bit(reinterpret_cast<unsigned char *>(buffer), 32, 0) != NAL_HEADER_LONG) {
     std::cout << "find leading zero byte" << std::endl;
     memset(buffer, 0, 4);
     file.read(buffer, 4);
     offset += 1;
   }
-  if (bit::next_bit(reinterpret_cast<unsigned char *>(buffer), 32, 24, 0) != NAL_HEADER_SHORT) {
+  if (bit::next_bit(reinterpret_cast<unsigned char *>(buffer), 24, 0) != NAL_HEADER_SHORT) {
     offset += 1;
     // find zero byte
   }
   file.seekg(offset, std::ios::beg);
   file.read(header, 6);
-  if (bit::next_bit(reinterpret_cast<unsigned char *>(header), 24, 24, 0) != NAL_HEADER_SHORT) {
+  if (bit::next_bit(reinterpret_cast<unsigned char *>(header), 24, 0) != NAL_HEADER_SHORT) {
     std::cout << "Invalid nalu header " << std::endl;
 #ifdef DEBUG
     std::cout << "read header " << std::hex << +*header << std::endl;
@@ -81,8 +81,8 @@ inline int read_one_nalu(std::ifstream &file, unsigned long start, unsigned char
     if (offset < (long) file_size - 4) {
       memset(buffer, 0, 4);
       file.read(buffer, 4);
-      if (bit::next_bit(reinterpret_cast<unsigned char *>(buffer), 32, 24, 0) == NAL_HEADER_SHORT
-          || bit::next_bit(reinterpret_cast<unsigned char *>(buffer), 32, 32, 0) == NAL_HEADER_LONG) {
+      if (bit::next_bit(reinterpret_cast<unsigned char *>(buffer), 24, 0) == NAL_HEADER_SHORT
+          || bit::next_bit(reinterpret_cast<unsigned char *>(buffer), 32, 0) == NAL_HEADER_LONG) {
         break;
       }
       file.seekg((int) file.tellg() - 4, std::ios::beg);
